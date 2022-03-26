@@ -3,11 +3,22 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { ClusterApp } from './ClusterApp';
+import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>,
+
+  <Router>
+    <Routes>
+      <Route path="" element={<App/>}></Route>
+      <Route path="cluster" element={<ClusterApp/>}></Route>
+      <Route path="/debug" element={<div />}></Route>
+    </Routes>
+  </Router>,
+
   document.getElementById('root')
 );
 
