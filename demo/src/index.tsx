@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ClusterApp } from './ClusterApp';
+import { CheckApp } from './CheckApp';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
 ReactDOM.render(
@@ -15,6 +16,7 @@ ReactDOM.render(
     <Routes>
       <Route path="" element={<App/>}></Route>
       <Route path="cluster" element={<ClusterApp/>}></Route>
+      <Route path="check" element={<CheckApp/>}></Route>
       <Route path="/debug" element={<div />}></Route>
     </Routes>
   </Router>,

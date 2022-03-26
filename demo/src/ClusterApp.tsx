@@ -15,7 +15,7 @@ class ClusterApp extends React.Component {
                 {<MainMenu/>}
             </div>
             <div id="main-view" className='view'>
-                <h1>{"Step 2:  Clustering Students’ Submissions"}</h1>
+                <h1>{"Step 1:  Design Rubric Based on Clustering"}</h1>
                 <div id="cluster">
                     Todo: display clustering results
                 </div>
