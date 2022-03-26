@@ -6,20 +6,40 @@ import reportWebVitals from './reportWebVitals';
 import { ClusterApp } from './ClusterApp';
 import { CheckApp } from './CheckApp';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-
-ReactDOM.render(
-  // <React.StrictMode>
-  //   <App />
-  // </React.StrictMode>,
-
-  <Router>
+// import { Page1, Page2, Page3 } from './Test';
+function ContentRouter(){
+  return (
+    <Router>
     <Routes>
       <Route path="" element={<App/>}></Route>
       <Route path="cluster" element={<ClusterApp/>}></Route>
       <Route path="check" element={<CheckApp/>}></Route>
       <Route path="/debug" element={<div />}></Route>
+      {/* <Route path='p1' element={<Page1/>}></Route>
+      <Route path='p2' element={<Page2/>}></Route>
+      <Route path='p3' element={<Page3/>}></Route> */}
     </Routes>
-  </Router>,
+  </Router>
+  )
+}
+
+function Sidebar(){
+  return (<div>
+    <h1>Sidebar</h1>
+  </div>)
+}
+
+function Layout(){
+  return (<div>
+    <Sidebar/>
+    <ContentRouter/>
+  </div>)
+}
+
+ReactDOM.render(
+  <React.StrictMode>
+    <Layout />
+  </React.StrictMode>,
 
   document.getElementById('root')
 );
