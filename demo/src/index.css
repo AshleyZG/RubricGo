@@ -20,3 +20,14 @@ html {
 #root {
   height: 100%;
 }
+
+#sidebar {
+  height: 100%;
+  width: 20%;
+  background-color:thistle;
+}
+
+#layout {
+  height: 100%;
+  display: flex;
+}
