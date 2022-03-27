@@ -41,3 +41,46 @@ export const clusterItems = [
     }
 ];
 
+export interface errorSubmission{
+    student: number;
+    submission: string;
+    index?: number;
+};
+
+export const errorSubmissions: errorSubmission[] = [
+    {
+        student: 1,
+        submission: "Bad bad"
+    },
+    {
+        student: 2,
+        submission: "Bad bad"
+    },
+    {
+        student: 3,
+        submission: "Bad bad"
+    }
+];
+
+export interface sameSubmission{
+    student: number;
+    submission: string;
+    index?: number;
+};
+
+export const sameSubmissions: sameSubmission[] = [
+    {
+        student: 1,
+        submission: "Not so good"
+    },
+    {
+        student: 2,
+        submission: "Not so good"
+    },
+    {
+        student: 3,
+        submission: "Not so good"
+    }
+];
+
+

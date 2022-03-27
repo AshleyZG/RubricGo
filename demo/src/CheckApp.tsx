@@ -1,6 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import { Box, Card } from '@mui/material';
+import { rubricItem, rubricItems, clusterItem, errorSubmission,errorSubmissions, sameSubmissions,sameSubmission} from './data';
 
 
 class CheckApp extends React.Component {
@@ -18,22 +20,44 @@ class CheckApp extends React.Component {
                 </div>
                 <div id="ShowRubric">
                     <h2>Initial Rubric</h2>
-                    Todo: Show initial rubric
-                    <button>Edit Rubric</button>
+                    <form>
+                        {rubricItems.map((value: rubricItem, index: number) => {
+                            return <label style={{display: "block"}} key={index}>
+                                {value.point} pts: 
+                            <input type="text" placeholder={value.defaultValue}
+                                ></input>
+                            </label>
+                        })}
+                    </form>
+                    <button>Submit</button>
                 </div>
                 <div id="ErrorSubmission">
                     <h2>Potential Error Submission</h2>
+                    {errorSubmissions.map((value: errorSubmission, index: number) => {
+                                return <input 
+                                    type="text" 
+                                    value={value.submission} 
+                                    readOnly 
+                                />
+                            })}
                     <div id="ErrorAnswer"></div>
                     <p>Select a rubric level to re-grade</p>
-                    <select id="select_grade">
-                        <option value ="2pto">2pt</option>
-                        <option value ="4pt">4pt</option> /** the option is from the initial rubric */
+                    <select>
+                        {rubricItems.map((value: rubricItem, index: number) => {
+                            return <option value={value.point}>{value.point}</option>
+                        })}
                     </select>
                     <button>Submit</button>
                 </div>
                 <div id="SimilarSubmission">
                     <h2>Similar submissions that could potentially be affected</h2>
-                    Todo: Change Similar Submission Grade (compute the similarity)
+                    {sameSubmissions.map((value: sameSubmission, index: number) => {
+                                return <input 
+                                    type="text" 
+                                    value={value.submission} 
+                                    readOnly 
+                                />
+                            })}
                     <button>Update the score</button>
                 </div>
             </div>
