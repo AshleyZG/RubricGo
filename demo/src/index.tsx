@@ -7,22 +7,12 @@ import { ClusterApp } from './ClusterApp';
 import { CheckApp } from './CheckApp';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 
-function ContentRoutes(){
-  return (
-    <Routes>
-    <Route path="" element={<App/>}></Route>
-    <Route path="/cluster" element={<ClusterApp/>}></Route>
-    <Route path="/check" element={<div />}></Route>
-  </Routes>
-
-)
-}
 
 interface Item{
   name: string;
   route: string;
-  key?: number;
 }
+
 const sidebarItems: Item[] = [
   {
     name: "Cluster Submissions",
@@ -34,9 +24,20 @@ const sidebarItems: Item[] = [
   },
 ];
 
+function ContentRoutes(){
+  return (
+    <Routes>
+    <Route path="" element={<App/>}></Route>
+    <Route path="/cluster" element={<ClusterApp/>}></Route>
+    <Route path="/check" element={<CheckApp />}></Route>
+  </Routes>
+
+)
+}
+
 function SidebarItem(props: Item){
   return (
-    <Link to={props.route} key={props.key}>
+    <Link to={props.route}>
       <p>{props.name}</p>
     </Link>
   )

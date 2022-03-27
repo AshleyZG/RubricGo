@@ -1,7 +1,6 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import { MainMenu } from './MainMenu';
 
 
 class CheckApp extends React.Component {
@@ -11,9 +10,6 @@ class CheckApp extends React.Component {
 
     render(): React.ReactNode {
         return <div className='view'>
-            <div id="left-view" className='view'>
-                {<MainMenu/>}
-            </div>
             <div id="main-view" className='view'>
                 <h1>{"Step 2:  Check Potential Error, Regrade, and Re-design the Rubric"}</h1>
                 <div id="cluster">
