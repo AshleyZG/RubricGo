@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Divider, Slider } from '@mui/material';
 import { rubricItem, rubricItems, clusterItem } from './data';
+import { Viz } from './ClusterViz';
 
 interface Answer{
     id: number;
@@ -84,12 +85,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         />
                     </div>
                     <div id="cluster-viz">
-                        Todo: add cluster visualization
-                        {this.state.clusteredAnswers.map((value: Answer, index: number) => {
-                            return <div key={index}>
-                                {value.text}
-                            </div>
-                        })}
+                        <Viz />
                     </div>
                 </div>
                 <div id="cluster-analysis">
