@@ -4,15 +4,17 @@ from sentence_transformers import SentenceTransformer
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
-model = SentenceTransformer('all-MiniLM-L6-v2')
 from sklearn.manifold import TSNE 
-
+from sentence_transformers import util
+import heapq
+import json
+model = SentenceTransformer('all-MiniLM-L6-v2')
 
 
 
 
 def cluster(distance):
-    df = pd.read_csv('test.csv', header = 0, sep = ",")
+    df = pd.read_csv('data/test.csv', header = 0, sep = ",")
     answers = df.iloc[:,1]
     student_id = df.iloc[:,0]
     sentences = []
@@ -28,7 +30,6 @@ def cluster(distance):
         "text": answers,
         "agg_bert_row": bert_label,
     })
-    pca = PCA(n_components=2)
     embedding_list = []
     for i in bert_embeddings:
         embedding_list.append(i)
@@ -44,15 +45,80 @@ def cluster(distance):
     vector_2 = pd.DataFrame(X_embedded)
     df_clusters["x_position"] = vector_2.iloc[:,0]
     df_clusters["y_position"] = vector_2.iloc[:,1]
-    df_clusters
 
     plt.scatter(X_embedded[:, 0], X_embedded[:, 1], s=length, c=bert_label, cmap='Paired')
     plt.title("Dim=2")
     plt.colorbar()
-    plt.savefig('cluster.png')
-    plt.show()
+    plt.savefig('data/cluster.png')
 
-    df_clusters.to_csv("cluster.csv")
+    clusters = {}
+    groups = {}
+    for i in range(0,len(student_id)):
+        i_cluster = bert_label[i]
+        if i_cluster not in clusters:
+            groups[i_cluster] = 1
+            clusters[i_cluster] = bert_embeddings[i]
+        else:
+            groups[i_cluster] +=1
+            clusters[i_cluster] = clusters[i_cluster] + bert_embeddings[i]
+    # center of the cluster       
+    for key in clusters:
+        clusters[key] = clusters[key]/groups[key]
+
+    distant_point = {}
+    distant_point_id = {}
+    for i in range(0, len(student_id)):
+        i_cluster = bert_label[i]
+        cos_sim = util.cos_sim(bert_embeddings[i], clusters[i_cluster])
+        if i_cluster not in distant_point:
+            distant_point[i_cluster] = cos_sim
+            distant_point_id[i_cluster] = i
+        else:
+            if(cos_sim < distant_point[i_cluster]):
+                distant_point[i_cluster] = cos_sim
+                distant_point_id[i_cluster] = i
+    print(distant_point_id)
+    js_distant_point = json.dumps({str(k): distant_point_id[k] for k in distant_point_id})  
+    file = open('data/distant_point.json', 'w')
+    file.write(js_distant_point)
+
+    influenced_points = {}
+    for key in distant_point_id:
+        id = distant_point_id[key]
+        if(distant_point[key]<0.8):
+            key_vector = bert_embeddings[id]
+            key_similarity_list = []
+            for i in range(0,len(student_id)):
+                cos_sim = util.cos_sim(bert_embeddings[id], bert_embeddings[i])
+                key_similarity_list.append(cos_sim)
+            influenced_points[key] = key_similarity_list
+
+    most_similar = {}
+    for key in influenced_points:
+        max_index = []
+        max_number = heapq.nlargest(6,influenced_points[key]) 
+        for t in max_number:
+            index = influenced_points[key].index(t)
+            max_index.append(index)
+            influenced_points[key][index] = 0
+        most_similar[key] = max_index
+    most_similar_answer = {}
+    for key in most_similar:
+        similar_answers = []
+        for i in most_similar[key]:
+            similar_answer = answers[i]
+            similar_answers.append(similar_answer)
+        most_similar_answer[key] = similar_answers
+
+    js_simlar_id = json.dumps({str(k):  most_similar[k] for k in  most_similar})  
+    file = open('data/most_similar_5_id.json', 'w')
+    file.write(js_simlar_id)
+
+    js_simlar_text = json.dumps({str(k):  most_similar_answer[k] for k in  most_similar_answer})  
+    file = open('data/most_similar_5_answer.json', 'w')
+    file.write(js_simlar_text)
+    
+    df_clusters.to_csv("data/cluster.csv")
     return df_clusters
 
 def main():
