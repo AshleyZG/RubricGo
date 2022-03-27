@@ -17,7 +17,7 @@ def cluster(distance):
 
     df_clusters = pd.DataFrame({
         "text": answers,
-        "agg_bert_row": bert_label
+        "agg_bert_row": bert_label,
     })
     df_clusters.to_csv("cluster.csv")
     return df_clusters
