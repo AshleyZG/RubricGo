@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { Divider, Slider } from '@mui/material';
-import { rubricItem, rubricItems, clusterItem, clusterItems } from './data';
+import { rubricItem, rubricItems, clusterItem } from './data';
 
 interface Answer{
     id: number;
@@ -11,6 +11,8 @@ interface Answer{
 interface ClusterAppProps{};
 interface ClusterAppState{
     clusteredAnswers: Answer[];
+    clusterItems: {[id: number]: clusterItem};
+    selectedClusterID: number | undefined;
 };
 
 class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
@@ -18,7 +20,11 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         super(props);
         this.state = {
             clusteredAnswers: [],
+            clusterItems: {},
+            selectedClusterID: undefined,
         }
+
+        this.selectCluster = this.selectCluster.bind(this);
     }
 
     componentDidMount(){
@@ -31,8 +37,24 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 			return response.json();
         })
         .then((data) => {
-            this.setState({clusteredAnswers: data.clusteredAnswers})
+            var clusterItems: {[id:number]: clusterItem} = {};
+            data.clusteredAnswers.forEach((value: any) => {
+                if (! (value.agg_bert_row in clusterItems)){
+                    clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+                }
+                clusterItems[value.agg_bert_row].items.push(value.text);
+            })
+            this.setState({
+                clusteredAnswers: data.clusteredAnswers,
+                clusterItems: clusterItems,
+            });
         })
+    }
+
+    selectCluster(event: React.MouseEvent){
+        var button = event.target as HTMLElement;
+        var clusterID = parseInt(event.currentTarget.getAttribute('data-id') as string);
+        this.setState({selectedClusterID: clusterID});
     }
 
     render(): React.ReactNode {
@@ -55,8 +77,8 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                     </div>
                     <div id="cluster-viz">
                         Todo: add cluster visualization
-                        {this.state.clusteredAnswers.map((value: Answer) => {
-                            return <div>
+                        {this.state.clusteredAnswers.map((value: Answer, index: number) => {
+                            return <div key={index}>
                                 {value.text}
                             </div>
                         })}
@@ -81,27 +103,30 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                     </div>
                     <div id="overview">
                         <div>
-                            {clusterItems.map((value: clusterItem, index: number) => {
-                                return  <button key={index}>cluster {value.id}</button>
+                            {
+                            Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
+                                return  <button key={index} onClick={this.selectCluster}
+                                    data-id={value.id}
+                                >cluster {value.id}</button>
                             })}
                         </div>
                         <Divider/>
                         <div>
-                            <p>Representative Example</p>
+                            <p>Representative Example from cluster {this.state.selectedClusterID}</p>
                             <input
                                 style={{width: "80%", height: "60px"}}
-                                value={"submission 1"}
+                                value={this.state.selectedClusterID===undefined? "submission 1": this.state.clusterItems[this.state.selectedClusterID].items[0]}
                                 readOnly
                             />
                             <input
                                 style={{width: "80%", height: "60px"}}
-                                value={"submission 2"}
+                                value={this.state.selectedClusterID===undefined? "submission 2": this.state.clusterItems[this.state.selectedClusterID].items[1]}
                                 readOnly
                             />
                         </div>
                         <form>
                             <label>
-                                Grade cluster  ??
+                                Grade cluster  {this.state.selectedClusterID}
                                 <select>
                                     {rubricItems.map((value: rubricItem, index: number) => {
                                         return <option value={value.point} key={index}>{value.point} pts</option>
