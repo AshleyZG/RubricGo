@@ -104,6 +104,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                                     <input
                                         style={{width: "80%", height: "40px"}}
                                         type="text"
+                                        defaultValue={value.defaultValue}
                                     ></input>
                                 </label>
                             })}
