@@ -25,7 +25,9 @@ app.get('/debug', (request, response) => {
 app.get('/clusterResult', (request, response) => {
     const resultsPath = path.resolve(__dirname, '../../data/cluster.csv');
     console.log(resultsPath);
-    const headers = ["id", 'text', 'agg_bert_row'];
+    const headers = ["", "id", 'text', 'agg_bert_row', "answer_length","x_position","y_position"];
+    // ,id,text,agg_bert_row,
+
     const fileContent = fs.readFileSync(resultsPath );
     var content;
     parse(fileContent, {
