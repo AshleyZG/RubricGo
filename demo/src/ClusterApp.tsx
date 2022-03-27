@@ -2,6 +2,7 @@ import React from 'react';
 import './App.css';
 import { Divider, Slider } from '@mui/material';
 import { rubricItem, rubricItems, clusterItem } from './data';
+import { Viz } from './ClusterViz';
 
 interface Answer{
     id: number;
@@ -57,6 +58,14 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         this.setState({selectedClusterID: clusterID});
     }
 
+    submitRubric(event: React.SyntheticEvent<HTMLFormElement>){
+        event.preventDefault();
+        const form = event.currentTarget;
+        rubricItems.forEach((value: rubricItem, index: number) => {
+            value.defaultValue = (form.elements[index] as HTMLInputElement).value;
+        })
+    }
+
     render(): React.ReactNode {
         return <div className='view'>
             <div className='title'>
@@ -76,12 +85,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         />
                     </div>
                     <div id="cluster-viz">
-                        Todo: add cluster visualization
-                        {this.state.clusteredAnswers.map((value: Answer, index: number) => {
-                            return <div key={index}>
-                                {value.text}
-                            </div>
-                        })}
+                        <Viz />
                     </div>
                 </div>
                 <div id="cluster-analysis">
@@ -89,17 +93,19 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         <h2>Design Rubrics for Question 1</h2>
                         <Divider/>
                         <p>Total Points: 10 pts</p>
-                        <form>
+                        <form onSubmit={this.submitRubric}>
                             {rubricItems.map((value: rubricItem, index: number) => {
                                 return <label style={{display: "block"}} key={index}>
                                     {value.point} pts:
                                     <input
+                                        style={{width: "80%", height: "40px"}}
                                         type="text"
+                                        defaultValue={value.defaultValue}
                                     ></input>
                                 </label>
                             })}
+                            <button type="submit">Submit</button>
                         </form>
-                        <button>Submit</button>
                     </div>
                     <div id="overview">
                         <div>
