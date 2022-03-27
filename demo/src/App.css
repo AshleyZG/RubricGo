@@ -1,63 +1,49 @@
+/* Common style attributes to all Apps
+ */
+
 .App {
   text-align: center;
   height: 100%;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
-
-#main-menu {
-  width: 200px;
-  height: 100%;
-  background-color: purple;
-}
-
-.main-menu-item {
-  color: white;
-}
-
 .view {
   height: 100%;
+  width: 80%;
 }
 
-#left-view{
-  display: inline-block;
+.title {
+  height: 10%;
+  top: 0;
+}
+.content {
+  /* display: flex; */
+  height: 90%;
 }
 
-#main-view {
-  display: inline-block;
+/* Style attributes for Cluster App
+ */
+#cluster {
+  height: 100%;
+  width: 50%;
+  float: left;
+  background-color: antiquewhite;
 }
+
+#cluster-analysis{
+  height: 100%;
+  width: 50%;
+  float: left;
+}
+
+#rubric-design{
+  height: 50%;
+  background-color: aqua;
+}
+
+#overview {
+  height: 50%;
+  background-color: yellowgreen;
+}
+
+/* Style attributes for Check & Regrade App
+ */
