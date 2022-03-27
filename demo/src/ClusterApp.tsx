@@ -3,10 +3,36 @@ import './App.css';
 import { Divider, Slider } from '@mui/material';
 import { rubricItem, rubricItems, clusterItem, clusterItems } from './data';
 
+interface Answer{
+    id: number;
+    text: string;
+    agg_bert_row: number;
+}
+interface ClusterAppProps{};
+interface ClusterAppState{
+    clusteredAnswers: Answer[];
+};
 
-class ClusterApp extends React.Component {
+class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
     constructor(props: any){
         super(props);
+        this.state = {
+            clusteredAnswers: [],
+        }
+    }
+
+    componentDidMount(){
+        console.log('todo: read clustering results');
+        fetch("http://localhost:5000/clusterResult")
+        .then((response) => {
+			if (!response.ok){
+				throw new Error('Something went wrong');
+			}
+			return response.json();
+        })
+        .then((data) => {
+            this.setState({clusteredAnswers: data.clusteredAnswers})
+        })
     }
 
     render(): React.ReactNode {
@@ -29,6 +55,11 @@ class ClusterApp extends React.Component {
                     </div>
                     <div id="cluster-viz">
                         Todo: add cluster visualization
+                        {this.state.clusteredAnswers.map((value: Answer) => {
+                            return <div>
+                                {value.text}
+                            </div>
+                        })}
                     </div>
                 </div>
                 <div id="cluster-analysis">
@@ -38,7 +69,7 @@ class ClusterApp extends React.Component {
                         <p>Total Points: 10 pts</p>
                         <form>
                             {rubricItems.map((value: rubricItem, index: number) => {
-                                return <label style={{display: "block"}}>
+                                return <label style={{display: "block"}} key={index}>
                                     {value.point} pts:
                                     <input
                                         type="text"
@@ -51,7 +82,7 @@ class ClusterApp extends React.Component {
                     <div id="overview">
                         <div>
                             {clusterItems.map((value: clusterItem, index: number) => {
-                                return  <button>cluster {value.id}</button>
+                                return  <button key={index}>cluster {value.id}</button>
                             })}
                         </div>
                         <Divider/>
@@ -72,8 +103,8 @@ class ClusterApp extends React.Component {
                             <label>
                                 Grade cluster  ??
                                 <select>
-                                    {rubricItems.map((value: rubricItem) => {
-                                        return <option value={value.point}>{value.point} pts</option>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <option value={value.point} key={index}>{value.point} pts</option>
                                     })}
                                 </select>
                             </label>
