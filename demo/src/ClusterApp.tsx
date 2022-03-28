@@ -66,6 +66,8 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         })
     }
 
+    // selectSlider(event: )
+    
     render(): React.ReactNode {
         return <div className='view'>
             <div className='title'>
@@ -78,14 +80,17 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         <Slider
                             size="small"
                             defaultValue={70}
-                            min={0}
-                            max={100}
-                            aria-label="Small"
-                            valueLabelDisplay="auto"
+                            min={20}
+                            max={80}
+                            aria-label="Small steps"
+                            valueLabelDisplay="on"
+                            step={20}
+                            marks
                         />
                     </div>
                     <div id="cluster-viz">
-                        <Viz />
+                        <h2>Cluster Result</h2>
+                        <Viz/>
                     </div>
                 </div>
                 <div id="cluster-analysis">

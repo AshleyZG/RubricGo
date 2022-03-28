@@ -5,7 +5,6 @@ import cors from 'cors';
 import { spawnSync } from 'child_process';
 import { parse } from 'csv-parse';
 
-
 const allowedOrigins = ['http://localhost:3000'];
 
 const options: cors.CorsOptions = {
@@ -35,11 +34,9 @@ app.get('/clusterResult', (request, response) => {
         columns: headers,
       }, (error, result) => {
         if (error) {
-          console.error(error);
+          // console.error(error);
         }
     
-        // console.log("Result", result);
-        // console.log(result[0] as AnswerItem]);
         result.shift();
         result.forEach((value: any) => {
             value.id = parseInt(value.id);
@@ -49,9 +46,18 @@ app.get('/clusterResult', (request, response) => {
         response.send({clusteredAnswers: content})
         // console.log(content);
     });
-    // console.log(content);
+})
 
-
+app.get('/distantResult', (request, response) => {
+    const similarPoint = require('../../data/most_similar_5_id.json');
+    const similarAnswer = require('../../data/most_similar_5_answer.json');
+    const similarContent = [];
+    var clusters = Object.keys(similarPoint);
+    // console.log(clusters)
+    for (var cluster of clusters) {
+        similarContent.push({cluster:cluster,id:similarPoint[cluster],answer:similarAnswer[cluster]})
+        };
+    response.send({clusters:clusters, similarContent: similarContent})
 })
 
 app.listen(PORT, () => {

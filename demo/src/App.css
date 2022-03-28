@@ -34,9 +34,22 @@
   float: left;
 }
 
+#cluster-viz{
+  margin:1rem
+}
+
 #rubric-design{
   height: 50%;
-  background-color: aqua;
+  background-color: lightblue;
+}
+
+#rubric-redesign{
+  height: 30%;
+}
+
+#rubric-display{
+  height: 100%;
+  background-color: lightblue;
 }
 
 #overview {
@@ -44,5 +57,9 @@
   background-color: yellowgreen;
 }
 
+#error {
+  height: 30%;
+  background-color: lightpink;
+}
 /* Style attributes for Check & Regrade App
  */
