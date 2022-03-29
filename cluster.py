@@ -46,10 +46,10 @@ def cluster(distance):
     df_clusters["x_position"] = vector_2.iloc[:,0]
     df_clusters["y_position"] = vector_2.iloc[:,1]
 
-    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], s=length, c=bert_label, cmap='Paired')
+    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], s=length, c=bert_label, cmap='tab20')
     plt.title("Dim=2")
     plt.colorbar()
-    plt.savefig('data/cluster.png')
+    plt.savefig('data/cluster_3.png')
 
     clusters = {}
     groups = {}
@@ -77,22 +77,16 @@ def cluster(distance):
             if(cos_sim < distant_point[i_cluster]):
                 distant_point[i_cluster] = cos_sim
                 distant_point_id[i_cluster] = i
-    print(distant_point_id)
-    js_distant_point = json.dumps({str(k): distant_point_id[k] for k in distant_point_id})  
-    file = open('data/distant_point.json', 'w')
-    file.write(js_distant_point)
 
     influenced_points = {}
     for key in distant_point_id:
         id = distant_point_id[key]
-        if(distant_point[key]<0.8):
-            key_vector = bert_embeddings[id]
+        if(distant_point[key]<0.85):
             key_similarity_list = []
             for i in range(0,len(student_id)):
                 cos_sim = util.cos_sim(bert_embeddings[id], bert_embeddings[i])
                 key_similarity_list.append(cos_sim)
             influenced_points[key] = key_similarity_list
-
     most_similar = {}
     for key in influenced_points:
         max_index = []
@@ -111,19 +105,18 @@ def cluster(distance):
         most_similar_answer[key] = similar_answers
 
     js_simlar_id = json.dumps({str(k):  most_similar[k] for k in  most_similar})  
-    file = open('data/most_similar_5_id.json', 'w')
+    file = open('data/most_similar_5_id_3.json', 'w')
     file.write(js_simlar_id)
 
     js_simlar_text = json.dumps({str(k):  most_similar_answer[k] for k in  most_similar_answer})  
-    file = open('data/most_similar_5_answer.json', 'w')
+    file = open('data/most_similar_5_answer_3.json', 'w')
     file.write(js_simlar_text)
     
-    df_clusters.to_csv("data/cluster.csv")
+    df_clusters.to_csv("data/cluster_3.csv")
     return df_clusters
 
 def main():
-    cluster_result = cluster(2)
-    print(cluster_result)
+    cluster(3)
 
 if __name__ == "__main__":
     main()

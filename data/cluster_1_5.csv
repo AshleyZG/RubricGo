@@ -1,0 +1,111 @@
+,id,text,agg_bert_row,answer_length,x_position,y_position
+0,1,Radical ideas ,8,14,6.529265,-1.921884
+1,2,No judgement,0,12,-1.8242939,2.6628075
+2,3,speed dating,10,12,-3.3452342,-5.3783627
+3,4,Make multiple ideas,8,19,5.037699,-2.597534
+4,5,Yes and,3,7,-1.877512,-3.2749817
+5,6,social interaction ,3,19,0.5504977,-4.6002855
+6,7,Quantity over quality ,2,22,-3.1630938,-1.0132113
+7,8,Encourage wild ideas,9,20,8.191431,-2.2998006
+8,9,Be visual,5,9,2.8636825,-9.929822
+9,10,Encourage wild ideas,9,20,8.195189,-2.9452662
+10,11,one conversation at a time,7,26,-0.105574034,-4.19105
+11,12,Be visual ,5,10,2.741379,-9.813224
+12,13,Stay focused on topic,13,21,6.763019,-7.4953494
+13,14,Stay on topics,13,14,6.1713448,-7.430374
+14,15,dont judge the idea,1,19,3.027858,0.21630366
+15,16,Defer judgement,0,15,-0.23574676,3.1188807
+16,17,include all wild ideas too,9,26,9.183635,-3.1988146
+17,18,Don't judge other people's ideas,1,32,2.7170324,0.28352833
+18,19,No one should be able to say that's my idea,1,43,3.6512792,-0.52535874
+19,20,"Defer judgement on ideas, DONT judge them too quickly ",0,54,1.4576633,1.3149523
+20,21,"Know your users, they are not u",4,31,-1.5237097,-7.6987348
+21,22,Go for quantity ,2,16,-2.891165,-2.2726986
+22,23,Users are not you,4,17,-1.6990238,-7.9194636
+23,24,be visual,5,9,2.9364865,-10.415436
+24,25,"Dont hate, just come up with ideas dont worry about quality of them yet",1,71,4.853248,0.70860237
+25,26,Defer Judgement,0,15,-0.5840187,3.7274663
+26,27,Embrace wild ideas,9,18,8.555159,-3.4220583
+27,28,Defer judgement,0,15,-0.06739157,3.2543297
+28,29,Quantity over quality,2,21,-3.1647282,-1.0121949
+29,30,Be visual,5,9,2.4223754,-9.7061615
+30,31,Stay focused on the topic,13,25,6.7720847,-7.4746666
+31,32,defer judgement,0,15,-0.96961,3.254924
+32,33,Generate a lot of ideas,8,23,5.2883763,-2.2951162
+33,34,"make sure you talk to the target audience first, and see what they want",6,71,1.5009271,-6.243344
+34,35,Dont shoot down others ideas,1,28,3.572656,-1.8017939
+35,36,defer judgement ,0,16,-0.54067427,3.0055194
+36,37,"Know thy users, for they are not you",4,36,-1.5010471,-7.512956
+37,38,You should encourage wild ideas,9,31,8.804066,-2.5194526
+38,39,Go for quantity,2,15,-2.8917532,-2.2726586
+39,40,Encourage wild ideas,9,20,7.943085,-2.368887
+40,41,Defer judgement,0,15,-0.7634962,3.0463448
+41,42,Diversity of ideas,8,18,6.30678,-0.9137604
+42,43,Come up with as many ideas as possible,12,38,5.5707,-3.847556
+43,44,"Defer judgement means coming up with ideas, not hating on any of them yet.",0,74,0.38845724,2.3988712
+44,45,Stay focused on topic,13,21,6.7627645,-7.494968
+45,46,Defer judgment,0,14,-0.36149442,4.3486285
+46,47,Encourage wild ideas,9,20,7.9723296,-2.9736097
+47,48,Stay focused on topic,13,21,6.764071,-7.4966497
+48,49,Being visual helps other understand your ideas or suggestions very quickly ,5,75,3.617648,-9.267593
+49,50,Be visual,5,9,2.0861278,-10.239425
+50,51,"defer judgement to others, let others participate in discussion",0,63,-0.5231596,2.0023537
+51,52,Defer Judgement,0,15,-1.0506165,3.670392
+52,53,Staying focused and on topic when discussing an idea,13,52,6.9451423,-6.975179
+53,54,Come up with as many ideas as possible,12,38,5.570432,-3.847512
+54,55,Building empathy with the people you're designing for ,3,54,2.4401536,-3.7212102
+55,56,Defer judgement ,0,16,0.20527484,3.615882
+56,57,Not think they are me,4,21,-1.3880432,-8.432988
+57,58,defer judgement,0,15,0.21182397,3.6995862
+58,59,Be visual in your ideation.,5,27,2.8533638,-8.806609
+59,60,Initially Include as many ideas as possible ,8,44,5.3194165,-2.9977338
+60,61,Know your target audience,6,25,1.4121459,-6.272913
+61,62,be visual; this is to say that human centered design should focus primarily on visual elements,5,94,4.0712366,-9.9418125
+62,63,build on others' ideas,8,22,3.7034073,-2.879392
+63,64,Defer judgement,0,15,-1.0696952,3.7934444
+64,65,Come up with a large number of ideas,12,36,5.603324,-3.7047129
+65,66,No such thing as a bad idea,1,27,3.4695644,0.09688145
+66,67,Brainstorming,8,13,4.1006093,-4.9457264
+67,68,No hate,1,7,4.69661,1.1463604
+68,69,build off of other ideas,8,24,4.2602196,-2.6733413
+69,70,Diversity and flexibility in ideas,8,34,6.320787,-0.85453236
+70,71,one rule of ideation is to defer judgement.,0,43,0.9500242,2.7404237
+71,72,Encourage wild ideas to try and find the best solution,9,54,7.836457,-3.6866212
+72,73,Encourage Wild Ideas,9,20,8.2150955,-2.308125
+73,74,Sketching,3,9,2.9742572,-8.04208
+74,75,Consider fron the side of user,4,30,-2.1309402,-7.147451
+75,76,Defer judgment ,0,15,-0.7415101,4.3135643
+76,77,Work on quantity instead of quality ,2,36,-3.1470091,-1.0824603
+77,78,It's important to engage in brainstorming,8,41,3.9932637,-5.0809803
+78,79,Conversations take place one at a time,7,38,0.025130719,-4.25487
+79,80,conversations take place one at a time,7,38,0.02745362,-4.251609
+80,81,We must empathize with users ,3,29,-0.7329507,-6.9838843
+81,82,Speed dating with users,10,23,-3.3330028,-5.4345374
+82,83,Listen to customers,6,19,0.76066315,-6.2166543
+83,84,Defer judgement,0,15,-0.28551778,3.774393
+84,85,Encourage Wild Ideas,9,20,7.807272,-2.639869
+85,86,Defer judgment,0,14,0.032471325,4.2510104
+86,87,One rule for ideation in human-centered design is to defer judgement while you are brainstorming ideas to be able to have an open mind for any ideas that may arise and to not close off any potential solutions.,8,209,3.5094051,-4.2390623
+87,88,Be visual,5,9,2.2262108,-10.44569
+88,89,Generate many ideas - user goals are evaluated,8,46,5.073205,-1.793233
+89,90,Speed date with users,10,21,-3.3443391,-5.530222
+90,91,Be Visual,5,9,2.7518356,-10.57884
+91,92,Don't judge ideas to quickly ,1,29,1.9178023,0.47032365
+92,93,Be Visual,5,9,2.0848732,-9.919112
+93,94,Be visual,5,9,2.4381585,-10.566729
+94,95,We would need to include a variety of ideas,12,43,6.192201,-4.038117
+95,96,Building on others ideas,8,24,3.8980522,-2.8885458
+96,97,build on each others' ideas,8,27,3.5901737,-3.0363402
+97,98,Create as many ideas as possible (quantity),8,43,5.3947864,-2.6770668
+98,99,Go for quantity,2,15,-2.8941512,-2.2696264
+99,100,You are not the user,4,20,-1.886703,-7.9499927
+100,101,Be visual,5,9,2.2443144,-9.754456
+101,102,Encourage wild ideas,9,20,7.8395467,-2.8564985
+102,103,Encourage wild ideas ,9,21,8.3441515,-2.684861
+103,104,need to account for the basic scenarios,3,39,5.9454913,-5.137757
+104,105,Build on other's ideas. ,8,24,3.895545,-2.667612
+105,106,Coming up with lots of ideas,12,28,5.449699,-4.0603776
+106,107,Cluster and select,11,18,-0.2883515,-1.5754875
+107,108,conversations take place on at a time ,7,38,0.064808995,-4.2826514
+108,109,Be visual,5,9,2.9769077,-10.2233925
+109,110,clustering and selection process,11,32,-0.27389467,-1.5601662
