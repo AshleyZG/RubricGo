@@ -7,7 +7,7 @@ export interface rubricItem{
 
 export const rubricItems: rubricItem[] = [
     {
-        point: 10,
+        point: 8,
         defaultValue: ""
     },
     {

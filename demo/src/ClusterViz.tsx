@@ -40,8 +40,8 @@ class Viz extends React.Component<VizProps, VizState>{
         super(props);
 
         this.spec = {
-              width: 300,
-              height: 200,
+              width: 400,
+              height: 300,
               description: "A scatterplot showing horsepower and miles per gallons for various cars.",
               data: {name: 'table'},
               mark: "point",
@@ -49,7 +49,7 @@ class Viz extends React.Component<VizProps, VizState>{
                 x: {field: "x", type: "quantitative"},
                 y: {field: "y", type: "quantitative"},
                 tooltip: {field: "text", type: "nominal"},
-                color: {field: "color", scale: {scheme: "category20b"}, type: "nominal"}
+                color: {field: "color", scale: {scheme: "tableau10"}, type: "nominal"}
               }
         }
 

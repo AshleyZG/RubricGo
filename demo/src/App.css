@@ -2,18 +2,20 @@
  */
 
 .App {
+  margin-top:60;
   text-align: center;
-  height: 100%;
+  height: 60%;
 }
 
 .view {
+  margin-top:60;
   height: 100%;
   width: 80%;
 }
 
 .title {
-  height: 10%;
-  top: 0;
+  height: 5%;
+  top: 60;
 }
 .content {
   height: 90%;
@@ -25,7 +27,7 @@
   height: 100%;
   width: 50%;
   float: left;
-  background-color: antiquewhite;
+  background-color: white;
 }
 
 #cluster-analysis{
@@ -39,8 +41,8 @@
 }
 
 #rubric-design{
-  height: 50%;
-  background-color: lightblue;
+  height: 45%;
+  background-color: white;
 }
 
 #rubric-redesign{
@@ -49,17 +51,17 @@
 
 #rubric-display{
   height: 100%;
-  background-color: lightblue;
+  background-color: white;
 }
 
 #overview {
-  height: 50%;
-  background-color: yellowgreen;
+  height: 55%;
+  background-color: white;
 }
 
 #error {
   height: 30%;
-  background-color: lightpink;
+  background-color: white;
 }
 /* Style attributes for Check & Regrade App
  */
