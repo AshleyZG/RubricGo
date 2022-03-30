@@ -6,7 +6,8 @@ import reportWebVitals from './reportWebVitals';
 import { ClusterApp } from './ClusterApp';
 import { CheckApp } from './CheckApp';
 import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
-
+import rubricgo from './logo.png'
+import {Button} from '@mui/material';
 
 interface Item{
   name: string;
@@ -15,7 +16,7 @@ interface Item{
 
 const sidebarItems: Item[] = [
   {
-    name: "Cluster Submissions",
+    name: "Cluster and Design",
     route: "/cluster"
   },
   {
@@ -23,6 +24,7 @@ const sidebarItems: Item[] = [
     route: "/check"
   },
 ];
+
 
 function ContentRoutes(){
   return (
@@ -38,14 +40,16 @@ function ContentRoutes(){
 function SidebarItem(props: Item){
   return (
     <Link to={props.route}>
-      <p>{props.name}</p>
+      <p></p>
+      <Button size="large" color="secondary">{props.name}</Button>
+      <p></p>
     </Link>
   )
 }
 
 function Sidebar(){
   return (<div id="sidebar">
-    <h1>Sidebar</h1>
+    <img  style={{height:60}} src={rubricgo}/>
     {sidebarItems.map((value: Item, index: number) => {
       return <SidebarItem  name={value.name} route={value.route} key={index}/>;
     })}

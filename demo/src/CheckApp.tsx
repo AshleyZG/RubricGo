@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import { rubricItem, rubricItems, clusterItem} from './data';
 import { Viz } from './ClusterViz';
-import { Divider} from '@mui/material';
+import {Input,Button,FormControl,MenuItem,Select,TextField,Stack} from '@mui/material';
 
 interface SimilarAppProps{};
 interface SimilarAppState{
@@ -62,7 +62,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
         event.preventDefault();
         const form = event.currentTarget;
         rubricItems.forEach((value: rubricItem, index: number) => {
-            if ((form.elements[index] as HTMLInputElement).value !=""){
+            if ((form.elements[index] as HTMLInputElement).value != value.defaultValue){
                 value.defaultValue = (form.elements[index] as HTMLInputElement).value;
             } else {
                 value.defaultValue = value.defaultValue
@@ -72,6 +72,9 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
 
     render(): React.ReactNode {
         return <div className='view'>
+            <div className='logo'>
+                <p></p>
+            </div>
             <div className='title'>
             <h1>{"Step 2:  Check Potential Error, Regrade, and Re-design the Rubric"}</h1>
             </div>
@@ -80,81 +83,99 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
                 <div id="cluster-viz">
                         <Viz/>
                 </div>
-            </div>
-            <div id="cluster-analysis">
                 <div id="rubric-redesign">
                     <div id="rubric-display">
                         <h2>Edit Rubric</h2>
-                        <p>Total Points: 10 pts</p>
+                        <p>Total Points: 8 pts</p>
                         <form onSubmit={this.submitRubric}>
                             {rubricItems.map((value: rubricItem, index: number) => {
                                 return <label style={{display: "block"}} key={index}>
-                                    {value.point} pts:
-                                    <input
+                                    {value.point} pts:&nbsp;
+                                    <Input
                                         style={{width: "80%", height: "40px"}}
                                         type="text"
-                                        placeholder={value.defaultValue}
-                                    ></input>
+                                        defaultValue={value.defaultValue}
+                                    ></Input>
                                 </label>
                             })}
-                            <button type="submit">Submit</button>
+                            <p></p>
+                            <Button variant="outlined" size="small" type="submit">Submit</Button>
                         </form>
                     </div>
                 </div>
+            </div>
+            <div id="cluster-analysis">
                 <div id="error">
-                    <h2>Potential Error Submission</h2>
+                    <h2>Potential Error Submission from cluster {this.state.selectedClusterID}</h2>
                     <div>
                         {Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
-                            return  <button key={index} onClick={this.selectCluster}
+                            return  <Button  variant="outlined" size="medium" key={index} onClick={this.selectCluster}
                                 data-id={value.id}
-                            >cluster {value.id}</button>
+                            >cluster {value.id}</Button>
                         })}
                     </div>
-                    <Divider/>
                     <div>
-                        <p>Potential Error Example from cluster {this.state.selectedClusterID}</p>
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                        <Input
+                            style={{width: "90%", height: "60px",background: "#C15BB1A6"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.clusterItems[this.state.selectedClusterID].items[0]}
                         />
                     </div>
                     <form>
-                        <label>
-                            Select a rubric level to re-grade
-                            <select>
-                                {rubricItems.map((value: rubricItem, index: number) => {
-                                    return <option value={value.point} key={index}>{value.point} pts</option>
-                                })}
-                            </select>
-                        </label>
+                    <p></p>
+                    <Stack direction="row" spacing={2}>
+                       
+                            <Button color="secondary">Regrade</Button>
+                                <FormControl style={{width: 100}}> 
+                                    <Select size="small">
+                                    <MenuItem disabled value="">
+                                        <em>Score</em>
+                                    </MenuItem>
+                                        {rubricItems.map((value: rubricItem, index: number) => {
+                                            return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                                <Button variant="outlined" size="small">Submit</Button>
+                                
+                        </Stack>
                     </form>
                     <div id="SimilarSubmission">
-                    <h2>Similar submissions that could potentially be affected</h2>
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                    <h2>Similar submissions that could potentially be influenced</h2>
+                        <Input
+                            style={{width: "90%", height: "40px",background: "#C15BB117"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[0]}
                         />
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                        <Input
+                            style={{width: "90%", height: "40px",background: "#C15BB117"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[1]}
                         />
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                        <Input
+                            style={{width: "90%", height: "40px",background: "#C15BB117"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[2]}
                         />
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                        <Input
+                            style={{width: "90%", height: "40px",background: "#C15BB117"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[3]}
                         />
-                        <input
-                            style={{width: "90%", height: "60px"}}
+                        <Input
+                            style={{width: "90%", height: "40px",background: "#C15BB117"}}
                             value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[4]}
                         />
-                        <select>
-                            {rubricItems.map((value: rubricItem, index: number) => {
-                                return <option value={value.point} key={index}>{value.point} pts</option>
-                            })}
-                        </select>
+                         <p></p>
+                        <Stack direction="row" spacing={2}>
+                            <Button color="secondary">Regrade</Button>
+                                <FormControl style={{width: 100}}> 
+                                    <Select size="small">
+                                    <MenuItem disabled value="">
+                                        <em>Score</em>
+                                    </MenuItem>
+                                        {rubricItems.map((value: rubricItem, index: number) => {
+                                            return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                                <Button variant="outlined" size="small">Submit</Button>
+                        </Stack>
                 </div>
                 </div>
             </div>
