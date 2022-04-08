@@ -3,6 +3,7 @@ import './App.css';
 import { Divider, Slider, Button, MenuItem, Select,Input,FormControl,TextField,Stack} from '@mui/material';
 import { rubricItem, rubricItems, clusterItem } from './data';
 import { Viz } from './ClusterViz';
+import { PlainObject } from 'react-vega';
 
 interface Answer{
     id: number;
@@ -14,6 +15,7 @@ interface ClusterAppState{
     clusteredAnswers: Answer[];
     clusterItems: {[id: number]: clusterItem};
     selectedClusterID: number | undefined;
+    clusteredData: PlainObject;
 };
 
 class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
@@ -23,9 +25,11 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             clusteredAnswers: [],
             clusterItems: {},
             selectedClusterID: undefined,
+            clusteredData: {table: []},
         }
 
         this.selectCluster = this.selectCluster.bind(this);
+        this.updateCluster = this.updateCluster.bind(this);
     }
 
     componentDidMount(){
@@ -50,6 +54,27 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 clusterItems: clusterItems,
             });
         })
+
+        var param = {distance: "2"};
+        var query = new URLSearchParams(param).toString();
+        fetch("http://localhost:5000/updateCluster?"+query)
+        .then((response) => {
+			if (!response.ok){
+				throw new Error('Something went wrong');
+			}
+			return response.json();
+        })
+        .then((data) => {
+            var dataItems: any[] = [];
+            data.clusteredAnswers.forEach((value: any) => {
+                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+            })
+            this.setState({
+                clusteredData: {table: dataItems},
+            });
+        })
+
+
     }
 
     selectCluster(event: React.MouseEvent){
@@ -64,6 +89,30 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         rubricItems.forEach((value: rubricItem, index: number) => {
             value.defaultValue = (form.elements[index] as HTMLInputElement).value;
         })
+    }
+
+    updateCluster(event: Event | React.SyntheticEvent<Element, Event>, value: number | number[]){
+        console.log(value);
+        var param = {distance: value.toString()};
+        var query = new URLSearchParams(param).toString();
+        fetch("http://localhost:5000/updateCluster?"+query)
+        .then((response) => {
+			if (!response.ok){
+				throw new Error('Something went wrong');
+			}
+			return response.json();
+        })
+        .then((data) => {
+            var dataItems: any[] = [];
+            data.clusteredAnswers.forEach((value: any) => {
+                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+            })
+            this.setState({
+                clusteredData: {table: dataItems},
+            });
+        })
+
+        // connect with backend and update clustering results
     }
 
     // selectSlider(event: )
@@ -91,11 +140,12 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                             valueLabelDisplay="on"
                             step={0.5}
                             marks
+                            onChangeCommitted={this.updateCluster}
                         />
                     </div>
                     <h2>Cluster Result</h2>
                     <div id="cluster-viz">
-                        <Viz/>
+                        <Viz data={this.state.clusteredData}/>
                     </div>
                 </div>
                 <div id="cluster-analysis">

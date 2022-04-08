@@ -81,7 +81,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
             <div id = "cluster"> 
                 <h2>Cluster Result</h2>
                 <div id="cluster-viz">
-                        <Viz/>
+                        <Viz data={{table: []}}/>
                 </div>
                 <div id="rubric-redesign">
                     <div id="rubric-display">

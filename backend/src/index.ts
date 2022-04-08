@@ -34,7 +34,6 @@ app.get('/clusterResult', (request, response) => {
         columns: headers,
       }, (error, result) => {
         if (error) {
-          // console.error(error);
         }
     
         result.shift();
@@ -44,7 +43,6 @@ app.get('/clusterResult', (request, response) => {
         })
         content = result;
         response.send({clusteredAnswers: content})
-        // console.log(content);
     });
 })
 
@@ -58,6 +56,42 @@ app.get('/distantResult', (request, response) => {
         similarContent.push({cluster:cluster,id:similarPoint[cluster],answer:similarAnswer[cluster]})
         };
     response.send({clusters:clusters, similarContent: similarContent})
+})
+
+app.get('/updateCluster', (request, response) => {
+    if (request.query.distance === undefined){
+        console.error('distance not defined');
+    }
+    var distance = parseFloat(request.query.distance as string);
+    console.log(distance);
+
+    const process = spawnSync('python',[ './src/cluster.py', distance.toString()])
+    console.log(process.status);
+
+    const resultsPath = path.resolve(__dirname, '../../data/cluster_3.csv');
+    console.log(resultsPath);
+    const headers = ["", "id", 'text', 'agg_bert_row', "answer_length","x_position","y_position"];
+    // ,id,text,agg_bert_row,
+
+    const fileContent = fs.readFileSync(resultsPath );
+    var content;
+    parse(fileContent, {
+        delimiter: ',',
+        columns: headers,
+      }, (error, result) => {
+        if (error) {
+          // console.error(error);
+        }
+        result.shift();
+        result.forEach((value: any) => {
+            value.id = parseInt(value.id);
+            value.agg_bert_row = parseInt(value.agg_bert_row);
+        })
+        content = result;
+
+        console.log(content);
+        response.send({clusteredAnswers: content})
+    });    
 })
 
 app.listen(PORT, () => {

@@ -27,6 +27,7 @@ export interface Data{
     table: DataItem[];
 }
 interface VizProps{
+    data: PlainObject;
 };
 interface VizState{
     data: PlainObject;
@@ -59,30 +60,10 @@ class Viz extends React.Component<VizProps, VizState>{
 
     }
 
-    componentDidMount(){
-        console.log('todo: read clustering results');
-        fetch("http://localhost:5000/clusterResult")
-        .then((response) => {
-			if (!response.ok){
-				throw new Error('Something went wrong');
-			}
-			return response.json();
-        })
-        .then((data) => {
-            var dataItems: any[] = [];
-            data.clusteredAnswers.forEach((value: any) => {
-                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
-            })
-            this.setState({
-                data: {table: dataItems},
-            });
-        })
-    }
 
     render(){
-        console.log(this.state.data)
         return (
-            <VegaLite spec={this.spec} data={this.state.data} />
+            <VegaLite spec={this.spec} data={this.props.data} />
         )    
     }
 }
