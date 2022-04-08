@@ -41,17 +41,42 @@ class Viz extends React.Component<VizProps, VizState>{
         super(props);
 
         this.spec = {
-              width: 400,
-              height: 300,
-              description: "A scatterplot showing horsepower and miles per gallons for various cars.",
-              data: {name: 'table'},
-              mark: "point",
-              encoding: {
+            width: 400,
+            height: 300,
+            description: "A scatterplot showing horsepower and miles per gallons for various cars.",
+            data: {name: 'table'},
+            mark: "point",
+            encoding: {
                 x: {field: "x", type: "quantitative"},
                 y: {field: "y", type: "quantitative"},
                 tooltip: {field: "text", type: "nominal"},
-                color: {field: "color", scale: {scheme: "tableau10"}, type: "nominal"}
-              }
+                color: {
+                    condition: {
+                        param: "cluster",
+                        field: "color", scale: {scheme: "tableau10"}, type: "nominal"
+                    },
+                    value: "gray"
+            }
+            },
+            params: [
+                {
+                    name: "cluster",
+                    select: {
+                        type: "point",
+                        fields: ["color"],
+                        on: "click",
+                        // resolve: "global",
+                        // empty: "all"
+                    },
+                    bind: {
+                        input: "select",
+                        options: [null, 0,1,2,3,4,5,6,7,8,9,10],
+                        // fields: ["color"]
+                    },
+
+
+                }
+            ]
         }
 
         this.state = {

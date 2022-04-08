@@ -34,26 +34,26 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 
     componentDidMount(){
         console.log('todo: read clustering results');
-        fetch("http://localhost:5000/clusterResult")
-        .then((response) => {
-			if (!response.ok){
-				throw new Error('Something went wrong');
-			}
-			return response.json();
-        })
-        .then((data) => {
-            var clusterItems: {[id:number]: clusterItem} = {};
-            data.clusteredAnswers.forEach((value: any) => {
-                if (! (value.agg_bert_row in clusterItems)){
-                    clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
-                }
-                clusterItems[value.agg_bert_row].items.push(value.text);
-            })
-            this.setState({
-                clusteredAnswers: data.clusteredAnswers,
-                clusterItems: clusterItems,
-            });
-        })
+        // fetch("http://localhost:5000/clusterResult")
+        // .then((response) => {
+		// 	if (!response.ok){
+		// 		throw new Error('Something went wrong');
+		// 	}
+		// 	return response.json();
+        // })
+        // .then((data) => {
+        //     var clusterItems: {[id:number]: clusterItem} = {};
+        //     data.clusteredAnswers.forEach((value: any) => {
+        //         if (! (value.agg_bert_row in clusterItems)){
+        //             clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+        //         }
+        //         clusterItems[value.agg_bert_row].items.push(value.text);
+        //     })
+        //     this.setState({
+        //         clusteredAnswers: data.clusteredAnswers,
+        //         clusterItems: clusterItems,
+        //     });
+        // })
 
         var param = {distance: "2"};
         var query = new URLSearchParams(param).toString();
@@ -65,12 +65,21 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 			return response.json();
         })
         .then((data) => {
+            var clusterItems: {[id:number]: clusterItem} = {};
             var dataItems: any[] = [];
             data.clusteredAnswers.forEach((value: any) => {
                 dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+
+                if (! (value.agg_bert_row in clusterItems)){
+                    clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+                }
+                clusterItems[value.agg_bert_row].items.push(value.text);
+
             })
             this.setState({
                 clusteredData: {table: dataItems},
+                clusteredAnswers: data.clusteredAnswers,
+                clusterItems: clusterItems,
             });
         })
 
@@ -80,7 +89,11 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
     selectCluster(event: React.MouseEvent){
         var button = event.target as HTMLElement;
         var clusterID = parseInt(event.currentTarget.getAttribute('data-id') as string);
-        this.setState({selectedClusterID: clusterID});
+        if (this.state.selectedClusterID === clusterID){
+            this.setState({selectedClusterID: undefined});
+        }else{
+            this.setState({selectedClusterID: clusterID});
+        }
     }
 
     submitRubric(event: React.SyntheticEvent<HTMLFormElement>){
@@ -103,19 +116,28 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 			return response.json();
         })
         .then((data) => {
+            var clusterItems: {[id:number]: clusterItem} = {};
             var dataItems: any[] = [];
             data.clusteredAnswers.forEach((value: any) => {
-                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+                // dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: -1});
+
+                if (! (value.agg_bert_row in clusterItems)){
+                    clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+                }
+                clusterItems[value.agg_bert_row].items.push(value.text);
+
             })
             this.setState({
                 clusteredData: {table: dataItems},
+                clusteredAnswers: data.clusteredAnswers,
+                clusterItems: clusterItems,
             });
         })
 
         // connect with backend and update clustering results
     }
 
-    // selectSlider(event: )
     
     render(): React.ReactNode {
         return <div className='view'>
