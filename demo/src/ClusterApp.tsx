@@ -3,6 +3,7 @@ import './App.css';
 import { Divider, Slider, Button, MenuItem, Select,Input,FormControl,TextField,Stack} from '@mui/material';
 import { rubricItem, rubricItems, clusterItem } from './data';
 import { Viz } from './ClusterViz';
+import { PlainObject } from 'react-vega';
 
 interface Answer{
     id: number;
@@ -14,6 +15,7 @@ interface ClusterAppState{
     clusteredAnswers: Answer[];
     clusterItems: {[id: number]: clusterItem};
     selectedClusterID: number | undefined;
+    clusteredData: PlainObject;
 };
 
 class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
@@ -23,14 +25,39 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             clusteredAnswers: [],
             clusterItems: {},
             selectedClusterID: undefined,
+            clusteredData: {table: []},
         }
 
         this.selectCluster = this.selectCluster.bind(this);
+        this.updateCluster = this.updateCluster.bind(this);
     }
 
     componentDidMount(){
         console.log('todo: read clustering results');
-        fetch("http://localhost:5000/clusterResult")
+        // fetch("http://localhost:5000/clusterResult")
+        // .then((response) => {
+		// 	if (!response.ok){
+		// 		throw new Error('Something went wrong');
+		// 	}
+		// 	return response.json();
+        // })
+        // .then((data) => {
+        //     var clusterItems: {[id:number]: clusterItem} = {};
+        //     data.clusteredAnswers.forEach((value: any) => {
+        //         if (! (value.agg_bert_row in clusterItems)){
+        //             clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+        //         }
+        //         clusterItems[value.agg_bert_row].items.push(value.text);
+        //     })
+        //     this.setState({
+        //         clusteredAnswers: data.clusteredAnswers,
+        //         clusterItems: clusterItems,
+        //     });
+        // })
+
+        var param = {distance: "2"};
+        var query = new URLSearchParams(param).toString();
+        fetch("http://localhost:5001/updateCluster?"+query)
         .then((response) => {
 			if (!response.ok){
 				throw new Error('Something went wrong');
@@ -39,23 +66,34 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         })
         .then((data) => {
             var clusterItems: {[id:number]: clusterItem} = {};
+            var dataItems: any[] = [];
             data.clusteredAnswers.forEach((value: any) => {
+                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+
                 if (! (value.agg_bert_row in clusterItems)){
                     clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
                 }
                 clusterItems[value.agg_bert_row].items.push(value.text);
+
             })
             this.setState({
+                clusteredData: {table: dataItems},
                 clusteredAnswers: data.clusteredAnswers,
                 clusterItems: clusterItems,
             });
         })
+
+
     }
 
     selectCluster(event: React.MouseEvent){
         var button = event.target as HTMLElement;
         var clusterID = parseInt(event.currentTarget.getAttribute('data-id') as string);
-        this.setState({selectedClusterID: clusterID});
+        if (this.state.selectedClusterID === clusterID){
+            this.setState({selectedClusterID: undefined});
+        }else{
+            this.setState({selectedClusterID: clusterID});
+        }
     }
 
     submitRubric(event: React.SyntheticEvent<HTMLFormElement>){
@@ -66,18 +104,65 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         })
     }
 
-    // selectSlider(event: )
+    updateCluster(event: Event | React.SyntheticEvent<Element, Event>, value: number | number[]){
+        console.log(value);
+        var param = {distance: value.toString()};
+        var query = new URLSearchParams(param).toString();
+        fetch("http://localhost:5001/updateCluster?"+query)
+        .then((response) => {
+			if (!response.ok){
+				throw new Error('Something went wrong');
+			}
+			return response.json();
+        })
+        .then((data) => {
+            var clusterItems: {[id:number]: clusterItem} = {};
+            var dataItems: any[] = [];
+            data.clusteredAnswers.forEach((value: any) => {
+                // dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
+
+                if (! (value.agg_bert_row in clusterItems)){
+                    clusterItems[value.agg_bert_row] = {id: value.agg_bert_row, items: []};
+                }
+                clusterItems[value.agg_bert_row].items.push(value.text);
+
+            })
+            this.setState({
+                clusteredData: {table: dataItems},
+                clusteredAnswers: data.clusteredAnswers,
+                clusterItems: clusterItems,
+            });
+        })
+
+        // connect with backend and update clustering results
+    }
+
     
     render(): React.ReactNode {
         return <div className='view'>
+        <div className='sidebar'>
             <div className='logo'>
                 <p></p>
             </div>
             <div className='title'>
-                <h1>{"Step 1:  Design Rubric Based on Clustering"}</h1>
+                <h1>Step 1: Get an overview of the questions and student submissions</h1>
+                <p>
+                <h2>Question: Please describe one rule for ideation in human-centered design.</h2>
+                </p>
+                <p>
+                    todo: student number
+                </p>
             </div>
-            <div className='content'>
-                <div id="cluster">
+            <div className='title'>
+                <h1>Step 2:  Understand different student answer groups </h1>
+                <p>todo: explain what is students answer group, and how this could help the instructor</p>
+
+                <p>present soem important information of the cluster</p>
+
+                <p>todo: in this step, connect representative example with the viz</p>
+            </div>
+            <div id="cluster">
                 <p>Note: You can change the Distance to see different clustering results ⬇️</p>
                 <p>Distance defines how diverse student submissions could be within a cluster. (0: each submission is a cluster; 6: only one cluster left)</p>
                     <div id="range-slider" style={{display: "inline-block", width: "70%"}}>
@@ -91,16 +176,82 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                             valueLabelDisplay="on"
                             step={0.5}
                             marks
+                            onChangeCommitted={this.updateCluster}
                         />
                     </div>
                     <h2>Cluster Result</h2>
                     <div id="cluster-viz">
-                        <Viz/>
+                        <Viz data={this.state.clusteredData}/>
                     </div>
                 </div>
+        </div>
+        <div className='content'>
+
+
+
                 <div id="cluster-analysis">
+                <div id="rubric-design">
+                        <h2>Step 3: Design Rubrics for Question 1</h2>
+                        <p>Note: You can write down the rubric based on representative examples</p>
+                        <Divider/>
+                        <p>Total Points: 8 pts</p>
+                        <form onSubmit={this.submitRubric}>
+                            {rubricItems.map((value: rubricItem, index: number) => {
+                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                    {value.point} pts:&nbsp;
+                                    <Input
+                                        style={{width: "80%", height: "40px"}}
+                                        type="text"
+                                        defaultValue={value.defaultValue}
+                                    ></Input>
+                                </label>
+                            })}
+                            <p></p>
+                            <Button variant="outlined" size="small" type="submit">Submit</Button>
+                        </form>
+                    </div>
                     <div id="rubric-design">
-                        <h2>Design Rubrics for Question 1</h2>
+                        <h2>Step 3: Design Rubrics for Question 1</h2>
+                        <p>Note: You can write down the rubric based on representative examples</p>
+                        <Divider/>
+                        <p>Total Points: 8 pts</p>
+                        <form onSubmit={this.submitRubric}>
+                            {rubricItems.map((value: rubricItem, index: number) => {
+                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                    {value.point} pts:&nbsp;
+                                    <Input
+                                        style={{width: "80%", height: "40px"}}
+                                        type="text"
+                                        defaultValue={value.defaultValue}
+                                    ></Input>
+                                </label>
+                            })}
+                            <p></p>
+                            <Button variant="outlined" size="small" type="submit">Submit</Button>
+                        </form>
+                    </div>
+                    <div id="rubric-design">
+                        <h2>Step 3: Design Rubrics for Question 1</h2>
+                        <p>Note: You can write down the rubric based on representative examples</p>
+                        <Divider/>
+                        <p>Total Points: 8 pts</p>
+                        <form onSubmit={this.submitRubric}>
+                            {rubricItems.map((value: rubricItem, index: number) => {
+                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                    {value.point} pts:&nbsp;
+                                    <Input
+                                        style={{width: "80%", height: "40px"}}
+                                        type="text"
+                                        defaultValue={value.defaultValue}
+                                    ></Input>
+                                </label>
+                            })}
+                            <p></p>
+                            <Button variant="outlined" size="small" type="submit">Submit</Button>
+                        </form>
+                    </div>
+                    <div id="rubric-design">
+                        <h2>Step 3: Design Rubrics for Question 1</h2>
                         <p>Note: You can write down the rubric based on representative examples</p>
                         <Divider/>
                         <p>Total Points: 8 pts</p>
@@ -121,7 +272,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                     </div>
                     <div id="overview">
                         <div>
-                        <h2>Representative Example from cluster {this.state.selectedClusterID}</h2>
+                        <h2>Step 3: Representative Example from cluster {this.state.selectedClusterID}</h2>
                             {
                             Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
                                 return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
@@ -162,8 +313,9 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 
                 </div>
 
-            </div>
         </div>
+    </div>
+
     }
 }
 

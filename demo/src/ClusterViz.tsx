@@ -27,6 +27,7 @@ export interface Data{
     table: DataItem[];
 }
 interface VizProps{
+    data: PlainObject;
 };
 interface VizState{
     data: PlainObject;
@@ -40,17 +41,42 @@ class Viz extends React.Component<VizProps, VizState>{
         super(props);
 
         this.spec = {
-              width: 400,
-              height: 300,
-              description: "A scatterplot showing horsepower and miles per gallons for various cars.",
-              data: {name: 'table'},
-              mark: "point",
-              encoding: {
+            width: 400,
+            height: 300,
+            description: "A scatterplot showing horsepower and miles per gallons for various cars.",
+            data: {name: 'table'},
+            mark: "point",
+            encoding: {
                 x: {field: "x", type: "quantitative"},
                 y: {field: "y", type: "quantitative"},
                 tooltip: {field: "text", type: "nominal"},
-                color: {field: "color", scale: {scheme: "tableau10"}, type: "nominal"}
-              }
+                color: {
+                    condition: {
+                        param: "cluster",
+                        field: "color", scale: {scheme: "tableau10"}, type: "nominal"
+                    },
+                    value: "gray"
+            }
+            },
+            params: [
+                {
+                    name: "cluster",
+                    select: {
+                        type: "point",
+                        fields: ["color"],
+                        on: "click",
+                        // resolve: "global",
+                        // empty: "all"
+                    },
+                    bind: {
+                        input: "select",
+                        options: [null, 0,1,2,3,4,5,6,7,8,9,10],
+                        // fields: ["color"]
+                    },
+
+
+                }
+            ]
         }
 
         this.state = {
@@ -59,30 +85,10 @@ class Viz extends React.Component<VizProps, VizState>{
 
     }
 
-    componentDidMount(){
-        console.log('todo: read clustering results');
-        fetch("http://localhost:5000/clusterResult")
-        .then((response) => {
-			if (!response.ok){
-				throw new Error('Something went wrong');
-			}
-			return response.json();
-        })
-        .then((data) => {
-            var dataItems: any[] = [];
-            data.clusteredAnswers.forEach((value: any) => {
-                dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
-            })
-            this.setState({
-                data: {table: dataItems},
-            });
-        })
-    }
 
     render(){
-        console.log(this.state.data)
         return (
-            <VegaLite spec={this.spec} data={this.state.data} />
+            <VegaLite spec={this.spec} data={this.props.data} />
         )    
     }
 }

@@ -19,6 +19,9 @@
 }
 .content {
   height: 90%;
+  width: calc(100vw - 200px);
+  left: 600px;
+  position: relative;
 }
 
 /* Style attributes for Cluster App
@@ -65,3 +68,10 @@
 }
 /* Style attributes for Check & Regrade App
  */
+
+ .sidebar {
+  width: 600px;
+  position: fixed;
+  top: 0;
+  left: 200px;
+}

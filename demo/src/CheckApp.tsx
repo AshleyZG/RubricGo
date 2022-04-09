@@ -26,7 +26,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
 
     componentDidMount(){
         console.log('todo: read distant results');
-        fetch("http://localhost:5000/distantResult")
+        fetch("http://localhost:5001/distantResult")
         .then((response) => {
 			if (!response.ok){
 				throw new Error('Something went wrong');
@@ -81,7 +81,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
             <div id = "cluster"> 
                 <h2>Cluster Result</h2>
                 <div id="cluster-viz">
-                        <Viz/>
+                        <Viz data={{table: []}}/>
                 </div>
                 <div id="rubric-redesign">
                     <div id="rubric-display">
