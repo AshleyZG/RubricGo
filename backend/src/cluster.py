@@ -1,3 +1,4 @@
+from cProfile import label
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 from sentence_transformers import SentenceTransformer
@@ -27,6 +28,7 @@ def cluster(distance):
 
     clustering_model.fit(bert_embeddings)
     bert_label = clustering_model.labels_
+
 
     df_clusters = pd.DataFrame({
         "id": student_id,

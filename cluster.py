@@ -29,6 +29,7 @@ def cluster(distance):
         "id": student_id,
         "text": answers,
         "agg_bert_row": bert_label,
+        "group_name": bert_label,
     })
     embedding_list = []
     for i in bert_embeddings:

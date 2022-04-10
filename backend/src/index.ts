@@ -23,8 +23,8 @@ app.get('/debug', (request, response) => {
 
 
 app.get('/distantResult', (request, response) => {
-    const similarPoint = require('../../data/most_similar_5_id.json');
-    const similarAnswer = require('../../data/most_similar_5_answer.json');
+    const similarPoint = require('../../data/most_similar_5_id_3.json');
+    const similarAnswer = require('../../data/most_similar_5_answer_3.json');
     const similarContent = [];
     var clusters = Object.keys(similarPoint);
     // console.log(clusters)
