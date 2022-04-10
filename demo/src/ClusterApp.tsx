@@ -168,30 +168,59 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         return  <div className='view'>
         <div className='sidebar'>
             <div className='logo'>
-                <p></p>
+
             </div>
             <div className='title'>
-                <h1>Step 1: Get an overview of the questions and student submissions</h1>
-                <p>
                 <h2>Question: Please describe one rule for ideation in human-centered design.</h2>
-                </p>
                 <p>
-                    todo: student number
+                    Student submissions:111
                 </p>
+                <h2>Cluster Result</h2>
+                <div>
+                <h3>Here are x clusters in total when you set the distance threshold as x
+                    {this.state.selectedClusterID}</h3>
+                    {
+                    Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
+                        return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
+                            data-id={value.id} 
+                        >cluster {value.id}</Button>
+                    })}
+                </div>
+                <div>
+                    <Input
+                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Representative example 1 in cluster x:": this.state.clusterItems[this.state.selectedClusterID].items[2]}
+                        readOnly
+                    />
+                    <Input
+                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Representative example 2 in cluster x:": this.state.clusterItems[this.state.selectedClusterID].items[3]}
+                        readOnly
+                    />
+                </div>
+                <div id="cluster-viz">
+                    <Viz data={this.state.clusteredData}/>
+                </div>
+
             </div>
-            <div className='title'>
-                <h1>Step 2:  Understand different student answer groups </h1>
-                <p>todo: explain what is students answer group, and how this could help the instructor</p>
+           
+            </div>
+        <div className='content'>
+        <div className='title'>
+                <h1>Step 1:  Understand different student answer groups </h1>
+                <p>We present some student answer groups to help you get an overview of the students answers. Similar answers can be clustered in one group through AI algorithms. </p>
 
-                <p>present soem important information of the cluster</p>
+                <p>You could adjust the clustering outcome through setting the distance threshold among groups. You can adjust the distance threshold by observing the cluster visualization. 
+                   In the figure, each point represents one student answer, and If you find that all the answers are close to each other in one answer group, this means you get a good cluster outcome. 
+                   Then you can stop adjusting the distance threshold  and start to understand students' answers in each cluster.    </p>
 
-                <p>todo: in this step, connect representative example with the viz</p>
             </div>
             <div id="cluster">
-                <p>Note: You can change the Distance to see different clustering results ⬇️</p>
-                <p>Distance defines how diverse student submissions could be within a cluster. (0: each submission is a cluster; 6: only one cluster left)</p>
+                <p>Distance defines how diverse student submissions could be divided in different clusters. If the distance is 0, this means only totally same answers can be grouped together. And 
+                    when the distance is longer, two answers within the distance can be in one group, otherwise, they will divided into different groups.
+                </p>
                 <div id="range-slider" style={{display: "inline-block", width: "70%"}}>
-                <span style={{display: "inline-block"}}>Set the Distance: </span>
+                <span style={{display: "inline-block"}}>Set the Distance threshold: </span>
                     <Slider
                         size="small"
                         defaultValue={2}
@@ -204,12 +233,35 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         onChangeCommitted={this.updateCluster}
                     />
                 </div>
-                <h2>Cluster Result</h2>
-                <div id="cluster-viz">
-                    <Viz data={this.state.clusteredData}/>
+
+                
+            </div>
+            <div id="cluster-analysis">
+                <div id="rubric-design">
+                    <h1>Step 2: Design Rubrics for Question 1</h1>
+                    <p>Note: Now, you have a general understanding of the student answers, so that you could design rubrics more equitable</p>
+                    <Divider/>
+                    <p>Total Points: 8 pts</p>
+                    <form onSubmit={this.submitRubric}>
+                        {rubricItems.map((value: rubricItem, index: number) => {
+                            return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                {value.point} pts:&nbsp;
+                                <Input
+                                    style={{width: "80%", height: "40px"}}
+                                    type="text"
+                                    defaultValue={value.defaultValue}
+                                ></Input>
+                            </label>
+                        })}
+
+                    </form>
+                    <p></p>
+                        <Button variant="outlined" size="small" type="submit">Submit</Button>
                 </div>
+                <div id="overview">
                 <div>
-                <h2>Step 3: Representative Example from cluster {this.state.selectedClusterID}</h2>
+                <h1>Step 3: Grade student answers by group
+                    </h1>
                     {
                     Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
                         return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
@@ -217,68 +269,12 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         >cluster {value.id}</Button>
                     })}
                 </div>
-                <div>
-                    <Input
-                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "submission 1": this.state.clusterItems[this.state.selectedClusterID].items[2]}
-                        readOnly
-                    />
-                    <Input
-                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "submission 2": this.state.clusterItems[this.state.selectedClusterID].items[3]}
-                        readOnly
-                    />
-                </div>
-            </div>
-            </div>
-        <div className='content'>
-            <div id="cluster-analysis">
-                <div id="rubric-design">
-                    <h2>Step 3: Design Rubrics for Question 1</h2>
-                    <p>Note: You can write down the rubric based on representative examples</p>
-                    <Divider/>
-                    <p>Total Points: 8 pts</p>
-                    <form onSubmit={this.submitRubric}>
-                        {rubricItems.map((value: rubricItem, index: number) => {
-                            return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                {value.point} pts:&nbsp;
-                                <Input
-                                    style={{width: "80%", height: "40px"}}
-                                    type="text"
-                                    defaultValue={value.defaultValue}
-                                ></Input>
-                            </label>
-                        })}
-                        <p></p>
-                        <Button variant="outlined" size="small" type="submit">Submit</Button>
-                    </form>
-                </div>
-                <div id="rubric-design">
-                    <h2>Step 3: Design Rubrics for Question 1</h2>
-                    <p>Note: You can write down the rubric based on representative examples</p>
-                    <Divider/>
-                    <p>Total Points: 8 pts</p>
-                    <form onSubmit={this.submitRubric}>
-                        {rubricItems.map((value: rubricItem, index: number) => {
-                            return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                {value.point} pts:&nbsp;
-                                <Input
-                                    style={{width: "80%", height: "40px"}}
-                                    type="text"
-                                    defaultValue={value.defaultValue}
-                                ></Input>
-                            </label>
-                        })}
-                        <p></p>
-                        <Button variant="outlined" size="small" type="submit">Submit</Button>
-                    </form>
-                </div>
-                <div id="overview">
+
                     
                     <form>
                     <p></p>
                     <Stack direction="row" spacing={2}>
-                        <Button color="secondary">Regrade</Button>
+                        <Button color="secondary">Grade Group {this.state.selectedClusterID}</Button>
                             <FormControl style={{width: 100}}> 
                                 <Select size="small">
                                 <MenuItem disabled value="">
@@ -293,7 +289,14 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                     </Stack>
                     </form>
                 </div>
-                <div id="ErrorSubmission">
+
+            <div id="ErrorSubmission">
+                <h1>Step 4: Check the AI-based Grading</h1>
+                <p>
+                    In the previous step, you graded the students answer based on different student answer groups. Since there might be some answers that are similar with 
+                    other answers in the group to some extent, but there are some nuanced difference among them. Here, we presented some answers that might be have nuanced differences with other answers
+                    in one group, you can double-check them to make the grading more accurately.
+                </p>
                 <h2>Potential Error Submission from cluster {this.state.selectedClusterID}</h2>
                 <div>
                     {Object.values(this.state.errorItems).map((value: clusterItem, index: number) => {
@@ -327,7 +330,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 </form>
             </div>
             <div id="SimilarSubmission">
-                <h2>Similar submissions that could potentially be influenced</h2>
+                <h2>Similar submissions that could potentially be influenced by the re-grading</h2>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
                         value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[0]}

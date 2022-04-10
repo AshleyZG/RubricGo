@@ -10,7 +10,7 @@
 .view {
   margin-top:60;
   height: 100%;
-  width: 50%;
+  width: 100%;
 }
 
 .title {
@@ -18,10 +18,10 @@
   top: 60;
 }
 .content {
-  height: 90%;
-  min-width : 100%;
-  left: calc(100vw - 900px);
-  position: relative;
+  overflow: scroll;
+  margin-left: 50%;
+  width: 45%;
+  height: calc(100%-400px);
 }
 
 /* Style attributes for Cluster App
@@ -36,7 +36,7 @@
 }
 
 #cluster-viz{
-  margin:1rem
+  margin-top:1rem
 }
 
 #rubric-design{
@@ -51,7 +51,7 @@
 }
 
 #overview {
-  height: 55%;
+  height: 100%;
   background-color: white;
 }
 
@@ -59,8 +59,12 @@
  */
 
  .sidebar {
-  width: 600px;
-  position: fixed;
+  width: 43%;
+  overflow: fixed;
   top: 0;
-  left: 20px;
+  float: left;
+  left: 5%;
+  height: calc(100%-400px);
+  overflow-y: auto;
+  position: fixed;
 }

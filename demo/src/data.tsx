@@ -15,7 +15,15 @@ export const rubricItems: rubricItem[] = [
         defaultValue: ""
     },
     {
+        point: 4,
+        defaultValue: ""
+    },
+    {
         point: 2,
+        defaultValue: ""
+    },
+    {
+        point: 0,
         defaultValue: ""
     },
 ];

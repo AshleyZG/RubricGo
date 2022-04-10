@@ -41,23 +41,11 @@ class Viz extends React.Component<VizProps, VizState>{
         super(props);
 
         this.spec = {
-            width: 400,
-            height: 300,
+            width: 600,
+            height: 450,
             description: "A scatterplot showing horsepower and miles per gallons for various cars.",
             data: {name: 'table'},
-            mark: "point",
-            encoding: {
-                x: {field: "x", type: "quantitative"},
-                y: {field: "y", type: "quantitative"},
-                tooltip: {field: "text", type: "nominal"},
-                color: {
-                    condition: {
-                        param: "cluster",
-                        field: "color", scale: {scheme: "tableau10"}, type: "nominal"
-                    },
-                    value: "gray"
-            }
-            },
+            mark: {"type": "point", "filled": true, "size": 100},
             params: [
                 {
                     name: "cluster",
@@ -68,15 +56,39 @@ class Viz extends React.Component<VizProps, VizState>{
                         // resolve: "global",
                         // empty: "all"
                     },
-                    bind: {
-                        input: "select",
-                        options: [null, 0,1,2,3,4,5,6,7,8,9,10],
-                        // fields: ["color"]
-                    },
+                    bind: "legend"
 
 
                 }
-            ]
+            ],
+            encoding: {
+                x: {field: "x", type: "quantitative"},
+                y: {field: "y", type: "quantitative"},
+                tooltip: {field: "text", type: "nominal"},
+                color: {
+                    condition: {
+                        param: "cluster",
+                        field: "color", scale: {scheme: "tableau10"}, type: "nominal",
+                        title: "Answer Group",
+
+        
+                    },
+                    value: "gray",
+                    legend:{symbolSize: 300},
+
+                        
+                
+                },
+                "opacity": {"condition": {"param": "cluster", "value": 1,}, "value": 0.2}, 
+
+            },
+            config: {
+                "axis": {"disable": true},
+                legend:{symbolSize: 200, labelFontSize:16, titleFontSize: 16,},
+                },
+
+
+            
         }
 
         this.state = {
