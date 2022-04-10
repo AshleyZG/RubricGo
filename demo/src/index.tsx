@@ -19,10 +19,10 @@ const sidebarItems: Item[] = [
     name: "Cluster and Design",
     route: "/cluster"
   },
-  {
-    name: "Check and Regrade",
-    route: "/check"
-  },
+  // {
+  //   name: "Check and Regrade",
+  //   route: "/check"
+  // },
 ];
 
 
@@ -31,35 +31,35 @@ function ContentRoutes(){
     <Routes>
     <Route path="" element={<App/>}></Route>
     <Route path="/cluster" element={<ClusterApp/>}></Route>
-    <Route path="/check" element={<CheckApp />}></Route>
+    {/* <Route path="/check" element={<CheckApp />}></Route> */}
   </Routes>
 
 )
 }
 
-function SidebarItem(props: Item){
-  return (
-    <Link to={props.route}>
-      <p></p>
-      <Button size="large" color="secondary">{props.name}</Button>
-      <p></p>
-    </Link>
-  )
-}
+// function SidebarItem(props: Item){
+//   return (
+//     <Link to={props.route}>
+//       <p></p>
+//       <Button size="large" color="secondary">{props.name}</Button>
+//       <p></p>
+//     </Link>
+//   )
+// }
 
-function Sidebar(){
-  return (<div id="sidebar">
-    <img  style={{height:60}} src={rubricgo}/>
-    {sidebarItems.map((value: Item, index: number) => {
-      return <SidebarItem  name={value.name} route={value.route} key={index}/>;
-    })}
-  </div>)
-}
+// function Sidebar(){
+//   return (<div id="sidebar">
+//     <img  style={{height:60}} src={rubricgo}/>
+//     {sidebarItems.map((value: Item, index: number) => {
+//       return <SidebarItem  name={value.name} route={value.route} key={index}/>;
+//     })}
+//   </div>)
+// }
 
 function Layout(){
   return (<div id="layout">
     <Router>
-      <Sidebar/>
+      {/* <Sidebar/> */}
       <ContentRoutes/>
     </Router>
   </div>)

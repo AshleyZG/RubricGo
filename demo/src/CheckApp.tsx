@@ -8,7 +8,7 @@ import {Input,Button,FormControl,MenuItem,Select,TextField,Stack} from '@mui/mat
 interface SimilarAppProps{};
 interface SimilarAppState{
     similarItems: {[id: number]: clusterItem};
-    clusterItems: {[id: number]: clusterItem};
+    errorItems: {[id: number]: clusterItem};
     selectedClusterID: number | undefined;
 };
 
@@ -16,7 +16,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
     constructor(props: any){
         super(props);
         this.state = {
-            clusterItems: {},
+            errorItems: {},
             similarItems: {},
             selectedClusterID: undefined
         }
@@ -34,19 +34,19 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
 			return response.json();
         })
         .then((data) => {
-            var clusterItems: {[id:number]: clusterItem} = {};
+            var errorItems: {[id:number]: clusterItem} = {};
             var similarItems: {[id:number]: clusterItem} = {};
             data.similarContent.forEach((value: any) => {
-                clusterItems[value.cluster] = {id: value.cluster, items: []};
+                errorItems[value.cluster] = {id: value.cluster, items: []};
                 similarItems[value.cluster] = {id: value.cluster, items: []};
-                clusterItems[value.cluster].items.push(value.answer[0]);
+                errorItems[value.cluster].items.push(value.answer[0]);
                 for (let i = 1; i < 6; i++){
                     similarItems[value.cluster].items.push(value.answer[i]);
                 }
             })
             this.setState({
                 similarItems: similarItems,
-                clusterItems: clusterItems,
+                errorItems: errorItems,
             });
         })
     }
@@ -105,10 +105,10 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
                 </div>
             </div>
             <div id="cluster-analysis">
-                <div id="error">
+                <div>
                     <h2>Potential Error Submission from cluster {this.state.selectedClusterID}</h2>
                     <div>
-                        {Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
+                        {Object.values(this.state.errorItems).map((value: clusterItem, index: number) => {
                             return  <Button  variant="outlined" size="medium" key={index} onClick={this.selectCluster}
                                 data-id={value.id}
                             >cluster {value.id}</Button>
@@ -117,7 +117,7 @@ class CheckApp extends React.Component<SimilarAppProps, SimilarAppState> {
                     <div>
                         <Input
                             style={{width: "90%", height: "60px",background: "#C15BB1A6"}}
-                            value={this.state.selectedClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.clusterItems[this.state.selectedClusterID].items[0]}
+                            value={this.state.selectedClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.errorItems[this.state.selectedClusterID].items[0]}
                         />
                     </div>
                     <form>

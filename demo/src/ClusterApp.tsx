@@ -14,6 +14,8 @@ interface ClusterAppProps{};
 interface ClusterAppState{
     clusteredAnswers: Answer[];
     clusterItems: {[id: number]: clusterItem};
+    similarItems: {[id: number]: clusterItem};
+    errorItems: {[id: number]: clusterItem};
     selectedClusterID: number | undefined;
     clusteredData: PlainObject;
 };
@@ -24,6 +26,8 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         this.state = {
             clusteredAnswers: [],
             clusterItems: {},
+            errorItems: {},
+            similarItems: {},
             selectedClusterID: undefined,
             clusteredData: {table: []},
         }
@@ -82,8 +86,29 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 clusterItems: clusterItems,
             });
         })
-
-
+        fetch("http://localhost:5001/distantResult")
+        .then((response) => {
+			if (!response.ok){
+				throw new Error('Something went wrong');
+			}
+			return response.json();
+        })
+        .then((data) => {
+            var errorItems: {[id:number]: clusterItem} = {};
+            var similarItems: {[id:number]: clusterItem} = {};
+            data.similarContent.forEach((value: any) => {
+                errorItems[value.cluster] = {id: value.cluster, items: []};
+                similarItems[value.cluster] = {id: value.cluster, items: []};
+                errorItems[value.cluster].items.push(value.answer[0]);
+                for (let i = 1; i < 6; i++){
+                    similarItems[value.cluster].items.push(value.answer[i]);
+                }
+            })
+            this.setState({
+                similarItems: similarItems,
+                errorItems: errorItems,
+            });
+        })
     }
 
     selectCluster(event: React.MouseEvent){
@@ -140,7 +165,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
 
     
     render(): React.ReactNode {
-        return <div className='view'>
+        return  <div className='view'>
         <div className='sidebar'>
             <div className='logo'>
                 <p></p>
@@ -165,154 +190,181 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             <div id="cluster">
                 <p>Note: You can change the Distance to see different clustering results ⬇️</p>
                 <p>Distance defines how diverse student submissions could be within a cluster. (0: each submission is a cluster; 6: only one cluster left)</p>
-                    <div id="range-slider" style={{display: "inline-block", width: "70%"}}>
-                    <span style={{display: "inline-block"}}>Set the Distance: </span>
-                        <Slider
-                            size="small"
-                            defaultValue={2}
-                            min={0}
-                            max={6}
-                            aria-label="Small steps"
-                            valueLabelDisplay="on"
-                            step={0.5}
-                            marks
-                            onChangeCommitted={this.updateCluster}
-                        />
-                    </div>
-                    <h2>Cluster Result</h2>
-                    <div id="cluster-viz">
-                        <Viz data={this.state.clusteredData}/>
-                    </div>
+                <div id="range-slider" style={{display: "inline-block", width: "70%"}}>
+                <span style={{display: "inline-block"}}>Set the Distance: </span>
+                    <Slider
+                        size="small"
+                        defaultValue={2}
+                        min={0}
+                        max={6}
+                        aria-label="Small steps"
+                        valueLabelDisplay="on"
+                        step={0.5}
+                        marks
+                        onChangeCommitted={this.updateCluster}
+                    />
                 </div>
-        </div>
+                <h2>Cluster Result</h2>
+                <div id="cluster-viz">
+                    <Viz data={this.state.clusteredData}/>
+                </div>
+                <div>
+                <h2>Step 3: Representative Example from cluster {this.state.selectedClusterID}</h2>
+                    {
+                    Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
+                        return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
+                            data-id={value.id} 
+                        >cluster {value.id}</Button>
+                    })}
+                </div>
+                <div>
+                    <Input
+                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "submission 1": this.state.clusterItems[this.state.selectedClusterID].items[2]}
+                        readOnly
+                    />
+                    <Input
+                        style={{width: "80%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "submission 2": this.state.clusterItems[this.state.selectedClusterID].items[3]}
+                        readOnly
+                    />
+                </div>
+            </div>
+            </div>
         <div className='content'>
-
-
-
-                <div id="cluster-analysis">
+            <div id="cluster-analysis">
                 <div id="rubric-design">
-                        <h2>Step 3: Design Rubrics for Question 1</h2>
-                        <p>Note: You can write down the rubric based on representative examples</p>
-                        <Divider/>
-                        <p>Total Points: 8 pts</p>
-                        <form onSubmit={this.submitRubric}>
-                            {rubricItems.map((value: rubricItem, index: number) => {
-                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                    {value.point} pts:&nbsp;
-                                    <Input
-                                        style={{width: "80%", height: "40px"}}
-                                        type="text"
-                                        defaultValue={value.defaultValue}
-                                    ></Input>
-                                </label>
-                            })}
-                            <p></p>
-                            <Button variant="outlined" size="small" type="submit">Submit</Button>
-                        </form>
-                    </div>
-                    <div id="rubric-design">
-                        <h2>Step 3: Design Rubrics for Question 1</h2>
-                        <p>Note: You can write down the rubric based on representative examples</p>
-                        <Divider/>
-                        <p>Total Points: 8 pts</p>
-                        <form onSubmit={this.submitRubric}>
-                            {rubricItems.map((value: rubricItem, index: number) => {
-                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                    {value.point} pts:&nbsp;
-                                    <Input
-                                        style={{width: "80%", height: "40px"}}
-                                        type="text"
-                                        defaultValue={value.defaultValue}
-                                    ></Input>
-                                </label>
-                            })}
-                            <p></p>
-                            <Button variant="outlined" size="small" type="submit">Submit</Button>
-                        </form>
-                    </div>
-                    <div id="rubric-design">
-                        <h2>Step 3: Design Rubrics for Question 1</h2>
-                        <p>Note: You can write down the rubric based on representative examples</p>
-                        <Divider/>
-                        <p>Total Points: 8 pts</p>
-                        <form onSubmit={this.submitRubric}>
-                            {rubricItems.map((value: rubricItem, index: number) => {
-                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                    {value.point} pts:&nbsp;
-                                    <Input
-                                        style={{width: "80%", height: "40px"}}
-                                        type="text"
-                                        defaultValue={value.defaultValue}
-                                    ></Input>
-                                </label>
-                            })}
-                            <p></p>
-                            <Button variant="outlined" size="small" type="submit">Submit</Button>
-                        </form>
-                    </div>
-                    <div id="rubric-design">
-                        <h2>Step 3: Design Rubrics for Question 1</h2>
-                        <p>Note: You can write down the rubric based on representative examples</p>
-                        <Divider/>
-                        <p>Total Points: 8 pts</p>
-                        <form onSubmit={this.submitRubric}>
-                            {rubricItems.map((value: rubricItem, index: number) => {
-                                return <label style={{display: "block",color: "#9c27b0"}} key={index}>
-                                    {value.point} pts:&nbsp;
-                                    <Input
-                                        style={{width: "80%", height: "40px"}}
-                                        type="text"
-                                        defaultValue={value.defaultValue}
-                                    ></Input>
-                                </label>
-                            })}
-                            <p></p>
-                            <Button variant="outlined" size="small" type="submit">Submit</Button>
-                        </form>
-                    </div>
-                    <div id="overview">
-                        <div>
-                        <h2>Step 3: Representative Example from cluster {this.state.selectedClusterID}</h2>
-                            {
-                            Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
-                                return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
-                                    data-id={value.id} 
-                                >cluster {value.id}</Button>
-                            })}
-                        </div>
-                        <div>
-                            <Input
-                                style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                                value={this.state.selectedClusterID===undefined? "submission 1": this.state.clusterItems[this.state.selectedClusterID].items[2]}
-                                readOnly
-                            />
-                            <Input
-                                style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                                value={this.state.selectedClusterID===undefined? "submission 2": this.state.clusterItems[this.state.selectedClusterID].items[3]}
-                                readOnly
-                            />
-                        </div>
-                        <form>
+                    <h2>Step 3: Design Rubrics for Question 1</h2>
+                    <p>Note: You can write down the rubric based on representative examples</p>
+                    <Divider/>
+                    <p>Total Points: 8 pts</p>
+                    <form onSubmit={this.submitRubric}>
+                        {rubricItems.map((value: rubricItem, index: number) => {
+                            return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                {value.point} pts:&nbsp;
+                                <Input
+                                    style={{width: "80%", height: "40px"}}
+                                    type="text"
+                                    defaultValue={value.defaultValue}
+                                ></Input>
+                            </label>
+                        })}
                         <p></p>
-                        <Stack direction="row" spacing={2}>
-                            <Button color="secondary">Regrade</Button>
-                                <FormControl style={{width: 100}}> 
-                                    <Select size="small">
-                                    <MenuItem disabled value="">
-                                        <em>Score</em>
-                                    </MenuItem>
-                                        {rubricItems.map((value: rubricItem, index: number) => {
-                                            return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
-                                        })}
-                                    </Select>
-                                </FormControl>
-                                <Button variant="outlined" size="small">Submit</Button>
-                        </Stack>
-                        </form>
-                    </div>
-
+                        <Button variant="outlined" size="small" type="submit">Submit</Button>
+                    </form>
                 </div>
-
+                <div id="rubric-design">
+                    <h2>Step 3: Design Rubrics for Question 1</h2>
+                    <p>Note: You can write down the rubric based on representative examples</p>
+                    <Divider/>
+                    <p>Total Points: 8 pts</p>
+                    <form onSubmit={this.submitRubric}>
+                        {rubricItems.map((value: rubricItem, index: number) => {
+                            return <label style={{display: "block",color: "#9c27b0"}} key={index}>
+                                {value.point} pts:&nbsp;
+                                <Input
+                                    style={{width: "80%", height: "40px"}}
+                                    type="text"
+                                    defaultValue={value.defaultValue}
+                                ></Input>
+                            </label>
+                        })}
+                        <p></p>
+                        <Button variant="outlined" size="small" type="submit">Submit</Button>
+                    </form>
+                </div>
+                <div id="overview">
+                    
+                    <form>
+                    <p></p>
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
+                    </form>
+                </div>
+                <div id="ErrorSubmission">
+                <h2>Potential Error Submission from cluster {this.state.selectedClusterID}</h2>
+                <div>
+                    {Object.values(this.state.errorItems).map((value: clusterItem, index: number) => {
+                        return  <Button  variant="outlined" size="medium" key={index} onClick={this.selectCluster}
+                            data-id={value.id}
+                        >cluster {value.id}</Button>
+                    })}
+                </div>
+                <div>
+                    <Input
+                        style={{width: "90%", height: "60px",background: "#C15BB1A6"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.errorItems[this.state.selectedClusterID].items[0]}
+                    />
+                </div>
+                <form>
+                <p></p>
+                <Stack direction="row" spacing={2}>
+                    <Button color="secondary">Regrade</Button>
+                        <FormControl style={{width: 100}}> 
+                            <Select size="small">
+                            <MenuItem disabled value="">
+                                <em>Score</em>
+                            </MenuItem>
+                                {rubricItems.map((value: rubricItem, index: number) => {
+                                    return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+                    <Button variant="outlined" size="small">Submit</Button>        
+                    </Stack>
+                </form>
+            </div>
+            <div id="SimilarSubmission">
+                <h2>Similar submissions that could potentially be influenced</h2>
+                    <Input
+                        style={{width: "90%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[0]}
+                    />
+                    <Input
+                        style={{width: "90%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[1]}
+                    />
+                    <Input
+                        style={{width: "90%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[2]}
+                    />
+                    <Input
+                        style={{width: "90%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[3]}
+                    />
+                    <Input
+                        style={{width: "90%", height: "40px",background: "#C15BB117"}}
+                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[4]}
+                    />
+                        <p></p>
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
+            </div>
+            </div>
         </div>
     </div>
 

@@ -10,7 +10,7 @@
 .view {
   margin-top:60;
   height: 100%;
-  width: 80%;
+  width: 50%;
 }
 
 .title {
@@ -19,23 +19,19 @@
 }
 .content {
   height: 90%;
-  width: calc(100vw - 200px);
-  left: 600px;
+  min-width : 100%;
+  left: calc(100vw - 900px);
   position: relative;
 }
 
 /* Style attributes for Cluster App
  */
 #cluster {
-  height: 100%;
-  width: 50%;
   float: left;
   background-color: white;
 }
 
 #cluster-analysis{
-  height: 100%;
-  width: 50%;
   float: left;
 }
 
@@ -48,9 +44,6 @@
   background-color: white;
 }
 
-#rubric-redesign{
-  height: 30%;
-}
 
 #rubric-display{
   height: 100%;
@@ -62,10 +55,6 @@
   background-color: white;
 }
 
-#error {
-  height: 30%;
-  background-color: white;
-}
 /* Style attributes for Check & Regrade App
  */
 
@@ -73,5 +62,5 @@
   width: 600px;
   position: fixed;
   top: 0;
-  left: 200px;
+  left: 20px;
 }
