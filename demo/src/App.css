@@ -16,6 +16,7 @@
 .title {
   height: 5%;
   top: 60;
+  margin-top: 2rem;
 }
 .content {
   overflow: scroll;

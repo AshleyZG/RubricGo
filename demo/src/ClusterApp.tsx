@@ -4,6 +4,7 @@ import { Divider, Slider, Button, MenuItem, Select,Input,FormControl,TextField,S
 import { rubricItem, rubricItems, clusterItem } from './data';
 import { Viz } from './ClusterViz';
 import { PlainObject } from 'react-vega';
+import rubricgo from './logo.png'
 
 interface Answer{
     id: number;
@@ -17,6 +18,7 @@ interface ClusterAppState{
     similarItems: {[id: number]: clusterItem};
     errorItems: {[id: number]: clusterItem};
     selectedClusterID: number | undefined;
+    selectedErrorClusterID: number | undefined;
     clusteredData: PlainObject;
 };
 
@@ -29,10 +31,12 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             errorItems: {},
             similarItems: {},
             selectedClusterID: undefined,
+            selectedErrorClusterID: undefined,
             clusteredData: {table: []},
         }
 
         this.selectCluster = this.selectCluster.bind(this);
+        this.selectErrorCluster = this.selectErrorCluster.bind(this);
         this.updateCluster = this.updateCluster.bind(this);
     }
 
@@ -71,6 +75,16 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         .then((data) => {
             var clusterItems: {[id:number]: clusterItem} = {};
             var dataItems: any[] = [];
+            var errorItems: {[id:number]: clusterItem} = {};
+            var similarItems: {[id:number]: clusterItem} = {};
+            data.similarContent.forEach((value: any) => {
+                errorItems[value.cluster] = {id: value.cluster, items: []};
+                similarItems[value.cluster] = {id: value.cluster, items: []};
+                errorItems[value.cluster].items.push(value.answer[0]);
+                for (let i = 1; i < 6; i++){
+                    similarItems[value.cluster].items.push(value.answer[i]);
+                }
+            })
             data.clusteredAnswers.forEach((value: any) => {
                 dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
 
@@ -84,29 +98,8 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 clusteredData: {table: dataItems},
                 clusteredAnswers: data.clusteredAnswers,
                 clusterItems: clusterItems,
-            });
-        })
-        fetch("http://localhost:5001/distantResult")
-        .then((response) => {
-			if (!response.ok){
-				throw new Error('Something went wrong');
-			}
-			return response.json();
-        })
-        .then((data) => {
-            var errorItems: {[id:number]: clusterItem} = {};
-            var similarItems: {[id:number]: clusterItem} = {};
-            data.similarContent.forEach((value: any) => {
-                errorItems[value.cluster] = {id: value.cluster, items: []};
-                similarItems[value.cluster] = {id: value.cluster, items: []};
-                errorItems[value.cluster].items.push(value.answer[0]);
-                for (let i = 1; i < 6; i++){
-                    similarItems[value.cluster].items.push(value.answer[i]);
-                }
-            })
-            this.setState({
                 similarItems: similarItems,
-                errorItems: errorItems,
+                errorItems: errorItems
             });
         })
     }
@@ -118,6 +111,17 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             this.setState({selectedClusterID: undefined});
         }else{
             this.setState({selectedClusterID: clusterID});
+        }
+    }
+
+    selectErrorCluster(event: React.MouseEvent){
+        var button = event.target as HTMLElement;
+        var errorClusterID = parseInt(event.currentTarget.getAttribute('data-id') as string);
+        console.log(errorClusterID)
+        if (this.state.selectedErrorClusterID === errorClusterID){
+            this.setState({selectedErrorClusterID: undefined});
+        }else{
+            this.setState({selectedErrorClusterID: errorClusterID});
         }
     }
 
@@ -143,6 +147,16 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
         .then((data) => {
             var clusterItems: {[id:number]: clusterItem} = {};
             var dataItems: any[] = [];
+            var errorItems: {[id:number]: clusterItem} = {};
+            var similarItems: {[id:number]: clusterItem} = {};
+            data.similarContent.forEach((value: any) => {
+                errorItems[value.cluster] = {id: value.cluster, items: []};
+                similarItems[value.cluster] = {id: value.cluster, items: []};
+                errorItems[value.cluster].items.push(value.answer[0]);
+                for (let i = 1; i < 6; i++){
+                    similarItems[value.cluster].items.push(value.answer[i]);
+                }
+            })
             data.clusteredAnswers.forEach((value: any) => {
                 // dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
                 dataItems.push({x: value.x_position, y: value.y_position, text: value.text, color: value.agg_bert_row});
@@ -157,18 +171,18 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 clusteredData: {table: dataItems},
                 clusteredAnswers: data.clusteredAnswers,
                 clusterItems: clusterItems,
+                similarItems: similarItems,
+                errorItems: errorItems,
             });
-        })
-
+        });
         // connect with backend and update clustering results
     }
-
     
     render(): React.ReactNode {
         return  <div className='view'>
         <div className='sidebar'>
             <div className='logo'>
-
+            <img  style={{height:60,margin:5}} src={rubricgo}/>
             </div>
             <div className='title'>
                 <h2>Question: Please describe one rule for ideation in human-centered design.</h2>
@@ -177,8 +191,6 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 </p>
                 <h2>Cluster Result</h2>
                 <div>
-                <h3>Here are x clusters in total when you set the distance threshold as x
-                    {this.state.selectedClusterID}</h3>
                     {
                     Object.values(this.state.clusterItems).map((value: clusterItem, index: number) => {
                         return  <Button variant="outlined" size="small" key={index} onClick={this.selectCluster} 
@@ -187,17 +199,20 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                     })}
                 </div>
                 <div>
+                    <Button color="secondary">Sample Answer 1 in Group {this.state.selectedClusterID} </Button>
                     <Input
                         style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Representative example 1 in cluster x:": this.state.clusterItems[this.state.selectedClusterID].items[2]}
+                        value={this.state.selectedClusterID===undefined ? "N/A": this.state.clusterItems[this.state.selectedClusterID].items[0]}
                         readOnly
                     />
+                    <Button color="secondary">Sample Answer 2 in Group {this.state.selectedClusterID}</Button>
                     <Input
                         style={{width: "80%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Representative example 2 in cluster x:": this.state.clusterItems[this.state.selectedClusterID].items[3]}
+                        value={this.state.selectedClusterID===undefined || this.state.clusterItems[this.state.selectedClusterID].items.length < 2 ? "N/A": this.state.clusterItems[this.state.selectedClusterID].items[3]}
                         readOnly
                     />
                 </div>
+                <p> Click the color point to highlight answers in one group 👇  </p>
                 <div id="cluster-viz">
                     <Viz data={this.state.clusteredData}/>
                 </div>
@@ -230,7 +245,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                         valueLabelDisplay="on"
                         step={0.5}
                         marks
-                        onChangeCommitted={this.updateCluster}
+                        onChangeCommitted={this.updateCluster} 
                     />
                 </div>
 
@@ -239,7 +254,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             <div id="cluster-analysis">
                 <div id="rubric-design">
                     <h1>Step 2: Design Rubrics for Question 1</h1>
-                    <p>Note: Now, you have a general understanding of the student answers, so that you could design rubrics more equitable</p>
+                    <p>Now, you have a general understanding of the student answers, it's time to design a rubric to grade their answers!</p>
                     <Divider/>
                     <p>Total Points: 8 pts</p>
                     <form onSubmit={this.submitRubric}>
@@ -293,14 +308,15 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
             <div id="ErrorSubmission">
                 <h1>Step 4: Check the AI-based Grading</h1>
                 <p>
-                    In the previous step, you graded the students answer based on different student answer groups. Since there might be some answers that are similar with 
-                    other answers in the group to some extent, but there are some nuanced difference among them. Here, we presented some answers that might be have nuanced differences with other answers
-                    in one group, you can double-check them to make the grading more accurately.
+                    In the previous step, you graded the students answers based on their groups. That's great! 🎉 <br></br>
+                    Although answers in the same group are similar to each other to some extent, there are still some nuances. <br></br>
+                    Here, we present one answer that shows the largest difference with the other answers in one group. <br></br>
+                    We invite you to double-check these answers to make the grading more accurately.
                 </p>
-                <h2>Potential Error Submission from cluster {this.state.selectedClusterID}</h2>
+                <h2>Answer might not belong to Group {this.state.selectedErrorClusterID}</h2>
                 <div>
                     {Object.values(this.state.errorItems).map((value: clusterItem, index: number) => {
-                        return  <Button  variant="outlined" size="medium" key={index} onClick={this.selectCluster}
+                        return  <Button  variant="outlined" size="medium" key={index} onClick={this.selectErrorCluster}
                             data-id={value.id}
                         >cluster {value.id}</Button>
                     })}
@@ -308,7 +324,7 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 <div>
                     <Input
                         style={{width: "90%", height: "60px",background: "#C15BB1A6"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.errorItems[this.state.selectedClusterID].items[0]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the potential error submission": this.state.errorItems[this.state.selectedErrorClusterID].items[0]}
                     />
                 </div>
                 <form>
@@ -330,28 +346,87 @@ class ClusterApp extends React.Component<ClusterAppProps, ClusterAppState> {
                 </form>
             </div>
             <div id="SimilarSubmission">
+                <p>
+                We also diagnose five more answers that are the most similiar to the answer we showed above. <br></br>
+                Maybe you need to check and regrade them too!
+                </p>
                 <h2>Similar submissions that could potentially be influenced by the re-grading</h2>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[0]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedErrorClusterID].items[0]}
                     />
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[1]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedErrorClusterID].items[1]}
                     />
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[2]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedErrorClusterID].items[2]}
                     />
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[3]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedErrorClusterID].items[3]}
                     />
+                    <Stack direction="row" spacing={2}>
+                        <Button color="secondary">Regrade</Button>
+                            <FormControl style={{width: 100}}> 
+                                <Select size="small">
+                                <MenuItem disabled value="">
+                                    <em>Score</em>
+                                </MenuItem>
+                                    {rubricItems.map((value: rubricItem, index: number) => {
+                                        return <MenuItem  value={value.point} key={index}>{value.point} pts</MenuItem>
+                                    })}
+                                </Select>
+                            </FormControl>
+                            <Button variant="outlined" size="small">Submit</Button>
+                    </Stack>
                     <Input
                         style={{width: "90%", height: "40px",background: "#C15BB117"}}
-                        value={this.state.selectedClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedClusterID].items[4]}
+                        value={this.state.selectedErrorClusterID===undefined? "Click the cluster button to see the Similar submission": this.state.similarItems[this.state.selectedErrorClusterID].items[4]}
                     />
-                        <p></p>
                     <Stack direction="row" spacing={2}>
                         <Button color="secondary">Regrade</Button>
                             <FormControl style={{width: 100}}> 

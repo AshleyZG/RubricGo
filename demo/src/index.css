@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
-  backgroud-color:thistle
+
 }
 h1 {
   font-size: 24px;
@@ -21,6 +21,10 @@ h2 {
 h3 {
   font-size: 14px;
   color:#9c27b0
+}
+
+p {
+  margin:3 auto
 }
 
 code {

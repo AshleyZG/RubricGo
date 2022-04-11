@@ -45,7 +45,7 @@ class Viz extends React.Component<VizProps, VizState>{
             height: 450,
             description: "A scatterplot showing horsepower and miles per gallons for various cars.",
             data: {name: 'table'},
-            mark: {"type": "point", "filled": true, "size": 100},
+            mark: {"type": "point", "filled": true, "size": 80},
             params: [
                 {
                     name: "cluster",
